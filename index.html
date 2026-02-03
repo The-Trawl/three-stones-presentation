@@ -22,9 +22,9 @@
   --warm-white: #FFF8F0;
   --gold: #F9CA24;
   --sand-color: #E8D5A3;
-  --rock1: #E74C3C;
-  --rock2: #3498DB;
-  --rock3: #2ECC71;
+  --rock1: #7D6B5D;
+  --rock2: #8B8B8B;
+  --rock3: #A67C52;
 }
 
 html, body {
@@ -893,7 +893,50 @@ p, li {
   text-align: center;
 }
 
-.kid-jar-result.visible { display: block; }
+.kid-jar-result.visible { display: flex; flex-direction: column; align-items: center; }
+
+.kid-jar-layout {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin: 15px 0;
+}
+
+.stones-list {
+  text-align: left;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stones-list li {
+  padding: 10px 15px;
+  margin: 8px 0;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  font-size: 1rem;
+  border-left: 4px solid var(--gold);
+}
+
+.stones-list li:nth-child(2) { border-left-color: var(--rock2); }
+.stones-list li:nth-child(3) { border-left-color: var(--rock3); }
+
+.reset-jar-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: rgba(231,76,60,0.2);
+  border: 2px solid rgba(231,76,60,0.5);
+  border-radius: 20px;
+  color: #FF6B6B;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.reset-jar-btn:hover {
+  background: rgba(231,76,60,0.4);
+  border-color: rgba(231,76,60,0.8);
+}
 
 .mini-jar {
   position: relative;
@@ -948,7 +991,7 @@ p, li {
 
 .mini-rock:nth-child(2) {
   width: 65px; height: 48px;
-  background: linear-gradient(135deg, #FF9A8A 0%, #E74C3C 30%, #C0392B 60%, #922B21 100%);
+  background: linear-gradient(135deg, #9A8B7D 0%, #7D6B5D 30%, #5E4D42 60%, #4A3D35 100%);
   box-shadow: inset -3px -3px 6px rgba(0,0,0,0.25), inset 2px 2px 4px rgba(255,255,255,0.12);
   bottom: 25px; left: 10px;
   animation-delay: 0.2s;
@@ -956,7 +999,7 @@ p, li {
 
 .mini-rock:nth-child(3) {
   width: 60px; height: 45px;
-  background: linear-gradient(135deg, #7EC8E3 0%, #3498DB 30%, #2980B9 60%, #1A6FA0 100%);
+  background: linear-gradient(135deg, #A8A8A8 0%, #8B8B8B 30%, #6E6E6E 60%, #525252 100%);
   box-shadow: inset -3px -3px 6px rgba(0,0,0,0.25), inset 2px 2px 4px rgba(255,255,255,0.12);
   bottom: 25px; right: 10px;
   animation-delay: 0.5s;
@@ -964,7 +1007,7 @@ p, li {
 
 .mini-rock:nth-child(4) {
   width: 58px; height: 44px;
-  background: linear-gradient(135deg, #82E8A0 0%, #2ECC71 30%, #27AE60 60%, #1E8449 100%);
+  background: linear-gradient(135deg, #C4A56D 0%, #A67C52 30%, #8B6441 60%, #6B4830 100%);
   box-shadow: inset -3px -3px 6px rgba(0,0,0,0.25), inset 2px 2px 4px rgba(255,255,255,0.12);
   bottom: 68px; left: 50%;
   transform: translateX(-50%);
@@ -1219,21 +1262,21 @@ p, li {
 
 .cj-rock:nth-child(2) {
   width: 48px; height: 36px;
-  background: linear-gradient(135deg, #FF9A8A 0%, #E74C3C 30%, #C0392B 60%, #922B21 100%);
+  background: linear-gradient(135deg, #9A8B7D 0%, #7D6B5D 30%, #5E4D42 60%, #4A3D35 100%);
   box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2), inset 1px 1px 3px rgba(255,255,255,0.1);
   bottom: 20px; left: 5px;
 }
 
 .cj-rock:nth-child(3) {
   width: 44px; height: 34px;
-  background: linear-gradient(135deg, #7EC8E3 0%, #3498DB 30%, #2980B9 60%, #1A6FA0 100%);
+  background: linear-gradient(135deg, #A8A8A8 0%, #8B8B8B 30%, #6E6E6E 60%, #525252 100%);
   box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2), inset 1px 1px 3px rgba(255,255,255,0.1);
   bottom: 20px; right: 5px;
 }
 
 .cj-rock:nth-child(4) {
   width: 42px; height: 33px;
-  background: linear-gradient(135deg, #82E8A0 0%, #2ECC71 30%, #27AE60 60%, #1E8449 100%);
+  background: linear-gradient(135deg, #C4A56D 0%, #A67C52 30%, #8B6441 60%, #6B4830 100%);
   box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2), inset 1px 1px 3px rgba(255,255,255,0.1);
   bottom: 50px; left: 50%;
   transform: translateX(-50%);
@@ -1309,29 +1352,29 @@ p, li {
 <!-- Hidden SVG definitions for shared gradients and filters -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden;">
   <defs>
-    <!-- Rock 1 gradient (red/warm stone) -->
+    <!-- Rock 1 gradient (brown river stone) -->
     <radialGradient id="r1grad" cx="35%" cy="30%" r="65%">
-      <stop offset="0%" stop-color="#FFA494"/>
-      <stop offset="18%" stop-color="#E74C3C"/>
-      <stop offset="45%" stop-color="#C0392B"/>
-      <stop offset="70%" stop-color="#922B21"/>
-      <stop offset="100%" stop-color="#641E16"/>
+      <stop offset="0%" stop-color="#B8A090"/>
+      <stop offset="18%" stop-color="#7D6B5D"/>
+      <stop offset="45%" stop-color="#5E4D42"/>
+      <stop offset="70%" stop-color="#4A3D35"/>
+      <stop offset="100%" stop-color="#352A24"/>
     </radialGradient>
-    <!-- Rock 2 gradient (blue stone) -->
+    <!-- Rock 2 gradient (grey granite) -->
     <radialGradient id="r2grad" cx="35%" cy="30%" r="65%">
-      <stop offset="0%" stop-color="#8DD4F0"/>
-      <stop offset="18%" stop-color="#3498DB"/>
-      <stop offset="45%" stop-color="#2980B9"/>
-      <stop offset="70%" stop-color="#1A6FA0"/>
-      <stop offset="100%" stop-color="#0E4D70"/>
+      <stop offset="0%" stop-color="#C0C0C0"/>
+      <stop offset="18%" stop-color="#8B8B8B"/>
+      <stop offset="45%" stop-color="#6E6E6E"/>
+      <stop offset="70%" stop-color="#525252"/>
+      <stop offset="100%" stop-color="#3A3A3A"/>
     </radialGradient>
-    <!-- Rock 3 gradient (green stone) -->
+    <!-- Rock 3 gradient (tan sandstone) -->
     <radialGradient id="r3grad" cx="35%" cy="30%" r="65%">
-      <stop offset="0%" stop-color="#90F0B0"/>
-      <stop offset="18%" stop-color="#2ECC71"/>
-      <stop offset="45%" stop-color="#27AE60"/>
-      <stop offset="70%" stop-color="#1E8449"/>
-      <stop offset="100%" stop-color="#145A32"/>
+      <stop offset="0%" stop-color="#E0CBA0"/>
+      <stop offset="18%" stop-color="#A67C52"/>
+      <stop offset="45%" stop-color="#8B6441"/>
+      <stop offset="70%" stop-color="#6B4830"/>
+      <stop offset="100%" stop-color="#4D3422"/>
     </radialGradient>
     <!-- Glass fill gradient (horizontal, edge-bright) -->
     <linearGradient id="jarGlassH" x1="0" y1="0" x2="1" y2="0">
@@ -1345,7 +1388,7 @@ p, li {
 </svg>
 
 <!-- Music Toggle -->
-<button id="music-toggle" title="Toggle ambient music">🔇</button>
+<!-- Music toggle removed -->
 
 <!-- Nav Arrows -->
 <button class="nav-arrow" id="prev-arrow">◀</button>
@@ -1514,10 +1557,10 @@ p, li {
       <div class="compass-pole pole-me">
         <h3 style="color: var(--gold);">🌟 For ME</h3>
         <div class="compass-traits">
-          <span class="compass-trait">💪 Brave</span>
-          <span class="compass-trait">🔍 Curious</span>
-          <span class="compass-trait">⚡ Strong</span>
-          <span class="compass-trait">🎨 Creative</span>
+          <span class="compass-trait">📚 Always learn new things</span>
+          <span class="compass-trait">💪 Keep my body strong</span>
+          <span class="compass-trait">🦁 Practice bravery</span>
+          <span class="compass-trait">🎨 Be creative</span>
         </div>
         <p class="pole-desc">Things that make YOU better</p>
       </div>
@@ -1525,10 +1568,10 @@ p, li {
       <div class="compass-pole pole-others">
         <h3 style="color: var(--soft-green);">🤝 For OTHERS</h3>
         <div class="compass-traits">
-          <span class="compass-trait">💛 Kind</span>
-          <span class="compass-trait">🙌 Helpful</span>
-          <span class="compass-trait">👫 Good Friend</span>
-          <span class="compass-trait">🎁 Sharing</span>
+          <span class="compass-trait">👫 Be a good friend</span>
+          <span class="compass-trait">🙌 Help when I can</span>
+          <span class="compass-trait">💛 Show kindness</span>
+          <span class="compass-trait">👂 Listen to people</span>
         </div>
         <p class="pole-desc">Things that make the world better</p>
       </div>
@@ -1543,12 +1586,12 @@ p, li {
     <h2>What Are YOUR Rocks?</h2>
     <p>Your "stones" are the 3 things that matter most today.<br>Not homework — that's sand. These are <strong>bigger</strong>.</p>
     <div class="examples-grid">
-      <div class="example-rock">Be a good friend to someone</div>
+      <div class="example-rock">Play with a friend for 30 minutes</div>
       <div class="example-rock">Practice guitar for 20 min</div>
-      <div class="example-rock">Help mom with dinner</div>
+      <div class="example-rock">Help set the table for dinner</div>
       <div class="example-rock">Read a chapter of my book</div>
-      <div class="example-rock">Write in my journal</div>
-      <div class="example-rock">Make someone laugh</div>
+      <div class="example-rock">Write one page in my journal</div>
+      <div class="example-rock">Tell someone a joke</div>
     </div>
   </div>
 
@@ -1588,21 +1631,21 @@ p, li {
       <div class="column-card">
         <h3>🌟 For Me</h3>
         <ul class="example-list">
-          <li>Learn something new</li>
-          <li>Create something cool</li>
-          <li>Take time to rest</li>
-          <li>Practice a skill I care about</li>
-          <li>Read something I enjoy</li>
+          <li>Learn one new fact today</li>
+          <li>Draw or build something</li>
+          <li>Take a 10-minute break outside</li>
+          <li>Practice something for 15 minutes</li>
+          <li>Read for 20 minutes</li>
         </ul>
       </div>
       <div class="column-card">
         <h3>🤝 For Others</h3>
         <ul class="example-list">
-          <li>Help a friend with something</li>
-          <li>Do something kind — no reason</li>
-          <li>Be a great teammate</li>
-          <li>Listen — really listen — to someone</li>
-          <li>Make someone's day better</li>
+          <li>Help a classmate with homework</li>
+          <li>Give someone a compliment</li>
+          <li>Share something I have</li>
+          <li>Ask someone how their day is going</li>
+          <li>Help clean up without being asked</li>
         </ul>
       </div>
     </div>
@@ -1969,25 +2012,25 @@ const kidData = {};
 kids.forEach(k => kidData[k] = { stones: [], submitted: false });
 
 const presetsForMe = [
-  'Read a chapter of a book',
-  'Practice something I love',
-  'Draw or create art',
-  'Write in a journal',
-  'Learn one new thing',
-  'Take 10 minutes just for me',
-  'Exercise or move my body',
-  'Work on a personal project',
+  'Read for 20 minutes',
+  'Practice my favorite skill for 15 min',
+  'Draw one picture',
+  'Write one journal page',
+  'Learn one new fact',
+  'Take a 10-minute break outside',
+  'Do 20 jumping jacks',
+  'Finish one project step',
 ];
 
 const presetsForOthers = [
-  'Help a friend with something',
-  'Do something kind — no reason',
-  'Listen to someone who needs it',
-  'Make someone laugh',
-  'Help with dinner or chores',
-  'Say thank you & mean it',
-  'Include someone who seems left out',
-  'Be a great teammate',
+  'Help someone with one task',
+  'Give 3 compliments today',
+  'Listen to someone for 5 minutes',
+  'Tell someone a joke',
+  'Help set or clear the table',
+  'Write a thank-you note',
+  'Invite someone to play',
+  'Share something I have',
 ];
 
 let activeKid = null;
@@ -2155,6 +2198,10 @@ function showKidResult(name) {
   heading.style.color = kidColors[kids.indexOf(name)];
   resultDiv.appendChild(heading);
 
+  // Layout container: jar on left, stones list on right
+  const layout = document.createElement('div');
+  layout.className = 'kid-jar-layout';
+
   const jar = document.createElement('div');
   jar.className = 'mini-jar';
 
@@ -2162,15 +2209,26 @@ function showKidResult(name) {
   sand.className = 'mini-jar-sand';
   jar.appendChild(sand);
 
-  kidData[name].stones.forEach((text, i) => {
+  // Add visual rocks (no text inside)
+  for (let i = 0; i < kidData[name].stones.length; i++) {
     const rock = document.createElement('div');
     rock.className = 'mini-rock';
-    // Truncate long text
-    rock.textContent = text.length > 22 ? text.substring(0, 20) + '…' : text;
     jar.appendChild(rock);
-  });
+  }
 
-  resultDiv.appendChild(jar);
+  layout.appendChild(jar);
+
+  // Stones list on the side
+  const stonesList = document.createElement('ul');
+  stonesList.className = 'stones-list';
+  kidData[name].stones.forEach(text => {
+    const li = document.createElement('li');
+    li.textContent = text;
+    stonesList.appendChild(li);
+  });
+  layout.appendChild(stonesList);
+
+  resultDiv.appendChild(layout);
 
   const msg = document.createElement('p');
   msg.textContent = 'Amazing choices, ' + name + '! 🌟';
@@ -2178,11 +2236,16 @@ function showKidResult(name) {
   msg.style.fontWeight = '700';
   resultDiv.appendChild(msg);
 
+  // Button row
+  const btnRow = document.createElement('div');
+  btnRow.style.display = 'flex';
+  btnRow.style.gap = '15px';
+  btnRow.style.marginTop = '15px';
+
   // Button to go back to selector
   const backBtn = document.createElement('button');
   backBtn.className = 'exp-btn btn-reset';
   backBtn.textContent = '← Pick another person';
-  backBtn.style.marginTop = '15px';
   backBtn.style.display = 'inline-block';
   backBtn.addEventListener('click', () => {
     resultDiv.classList.remove('visible');
@@ -2190,7 +2253,25 @@ function showKidResult(name) {
     selectedStones = [];
     document.querySelectorAll('.kid-btn').forEach(b => b.classList.remove('selected'));
   });
-  resultDiv.appendChild(backBtn);
+  btnRow.appendChild(backBtn);
+
+  // Reset this kid's jar button
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'reset-jar-btn';
+  resetBtn.textContent = '🔄 Reset ' + name + "'s Jar";
+  resetBtn.addEventListener('click', () => {
+    kidData[name].stones = [];
+    kidData[name].submitted = false;
+    const kidBtn = document.getElementById('kid-btn-' + name);
+    kidBtn.classList.remove('done');
+    resultDiv.classList.remove('visible');
+    activeKid = null;
+    selectedStones = [];
+    document.querySelectorAll('.kid-btn').forEach(b => b.classList.remove('selected'));
+  });
+  btnRow.appendChild(resetBtn);
+
+  resultDiv.appendChild(btnRow);
 }
 
 // ==================== CONFETTI ====================
