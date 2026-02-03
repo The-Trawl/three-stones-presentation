@@ -1,0 +1,7 @@
+{
+  "subdomain": "maycenter",
+  "domain": "maycenter.itsalive.co",
+  "email": "s@swh.me",
+  "deployToken": "ea8c8b099ba4c1643683eb88570753d1293a5e3a6f80d28997ca7d683a477a5e",
+  "publishDir": "."
+}
