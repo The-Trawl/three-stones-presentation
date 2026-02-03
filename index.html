@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three Stones</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange: #FF6B35;
+  --sunset: #F7931E;
+  --coral: #FF8C6B;
+  --deep-blue: #1B2A4A;
+  --sky: #4A90D9;
+  --soft-green: #6BCB77;
+  --mint: #88D9A8;
+  --purple: #9B59B6;
+  --pink: #E84393;
+  --warm-white: #FFF8F0;
+  --gold: #F9CA24;
+  --sand-color: #E8D5A3;
+  --rock1: #E74C3C;
+  --rock2: #3498DB;
+  --rock3: #2ECC71;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Nunito', sans-serif;
+  background: var(--deep-blue);
+  color: var(--warm-white);
+}
+
+/* ========== SLIDE CONTAINER ========== */
+#deck {
+  width: 100%; height: 100%;
+  position: relative;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 60px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(60px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.slide.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.slide.exit-left {
+  opacity: 0;
+  transform: translateX(-60px);
+}
+
+/* ========== TYPOGRAPHY ========== */
+h1 {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 1.1;
+  margin-bottom: 0.3em;
+}
+
+h2 {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  margin-bottom: 0.4em;
+}
+
+h3 {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  margin-bottom: 0.3em;
+}
+
+p, li {
+  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+  line-height: 1.5;
+  max-width: 800px;
+}
+
+.subtitle {
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  opacity: 0.85;
+  font-weight: 600;
+}
+
+/* ========== BACKGROUNDS ========== */
+.bg-gradient-warm {
+  background: linear-gradient(135deg, #1B2A4A 0%, #2D3E6B 30%, #FF6B35 100%);
+}
+
+.bg-gradient-sky {
+  background: linear-gradient(180deg, #1B2A4A 0%, #2D4A7A 50%, #4A90D9 100%);
+}
+
+.bg-gradient-sunset {
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 30%, #F9CA24 60%, #FF8C6B 100%);
+  color: var(--deep-blue);
+}
+
+.bg-gradient-calm {
+  background: linear-gradient(180deg, #1B2A4A 0%, #1a3a5c 50%, #2D4A7A 100%);
+}
+
+.bg-gradient-green {
+  background: linear-gradient(135deg, #1B2A4A 0%, #1a4a3a 50%, #6BCB77 100%);
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(135deg, #1B2A4A 0%, #3a1a4a 50%, #9B59B6 100%);
+}
+
+/* ========== NAVIGATION DOTS ========== */
+#nav-dots {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+
+.nav-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+
+.nav-dot.active {
+  background: var(--gold);
+  transform: scale(1.3);
+  box-shadow: 0 0 10px rgba(249,202,36,0.5);
+}
+
+/* ========== ARROWS ========== */
+.nav-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.3);
+  color: white;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-arrow:hover { background: rgba(255,255,255,0.3); }
+#prev-arrow { left: 15px; }
+#next-arrow { right: 15px; }
+
+/* ========== MUSIC TOGGLE ========== */
+#music-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 200;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.3);
+  color: white;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+#music-toggle:hover { background: rgba(255,255,255,0.3); }
+#music-toggle.playing { background: rgba(107,203,119,0.4); border-color: var(--soft-green); }
+
+/* ========== TITLE SLIDE ========== */
+/* Jar SVG animation */
+.title-jar-wrap {
+  position: relative;
+  width: 200px;
+  height: 260px;
+  margin-bottom: 30px;
+}
+
+.jar-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.jar-body {
+  fill: none;
+  stroke: rgba(255,255,255,0.6);
+  stroke-width: 3;
+}
+
+.jar-lid {
+  fill: rgba(255,255,255,0.3);
+  stroke: rgba(255,255,255,0.6);
+  stroke-width: 2;
+}
+
+/* Floating rocks in title jar */
+.title-rock {
+  position: absolute;
+  border-radius: 40% 50% 45% 55%;
+  animation: float-rock 3s ease-in-out infinite;
+}
+
+.title-rock:nth-child(2) {
+  width: 55px; height: 45px;
+  background: var(--rock1);
+  bottom: 55px; left: 45px;
+  animation-delay: 0s;
+}
+
+.title-rock:nth-child(3) {
+  width: 50px; height: 42px;
+  background: var(--rock2);
+  bottom: 90px; left: 80px;
+  animation-delay: 0.5s;
+}
+
+.title-rock:nth-child(4) {
+  width: 48px; height: 40px;
+  background: var(--rock3);
+  bottom: 55px; left: 105px;
+  animation-delay: 1s;
+}
+
+@keyframes float-rock {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+.title-glow {
+  text-shadow: 0 0 40px rgba(255,107,53,0.4), 0 0 80px rgba(249,202,36,0.2);
+}
+
+/* ========== BUSY DAY SLIDE ========== */
+.busy-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 25px;
+  max-width: 700px;
+}
+
+.busy-item {
+  background: rgba(255,255,255,0.12);
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 600;
+  animation: pop-in 0.4s ease backwards;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.busy-item:nth-child(1) { animation-delay: 0.1s; }
+.busy-item:nth-child(2) { animation-delay: 0.2s; }
+.busy-item:nth-child(3) { animation-delay: 0.3s; }
+.busy-item:nth-child(4) { animation-delay: 0.4s; }
+.busy-item:nth-child(5) { animation-delay: 0.5s; }
+.busy-item:nth-child(6) { animation-delay: 0.6s; }
+.busy-item:nth-child(7) { animation-delay: 0.7s; }
+.busy-item:nth-child(8) { animation-delay: 0.8s; }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ========== JAR EXPERIMENT SLIDE ========== */
+.jar-experiment {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.jar-demo-wrap {
+  position: relative;
+  width: 220px;
+  height: 320px;
+  flex-shrink: 0;
+}
+
+.jar-demo-outline {
+  position: absolute;
+  inset: 0;
+  border: 3px solid rgba(255,255,255,0.5);
+  border-radius: 10px 10px 30px 30px;
+  background: rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+
+.jar-demo-lid {
+  position: absolute;
+  top: -12px;
+  left: 25%;
+  width: 50%;
+  height: 18px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 5px 5px 0 0;
+  border: 2px solid rgba(255,255,255,0.4);
+}
+
+/* Sand fill */
+.jar-sand {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  background: linear-gradient(180deg, #E8D5A3, #C4A96A);
+  transition: height 1.5s ease-in-out;
+  border-radius: 0 0 27px 27px;
+}
+
+.jar-sand.filling { height: 85%; }
+.jar-sand.partial { height: 35%; }
+
+/* Rocks inside jar */
+.jar-rock {
+  position: absolute;
+  border-radius: 40% 50% 45% 55%;
+  opacity: 0;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+}
+
+.jar-rock.visible { opacity: 1; }
+
+.jar-rock-1 {
+  width: 70px; height: 55px;
+  background: linear-gradient(135deg, var(--rock1), #c0392b);
+  bottom: 8px; left: 15px;
+}
+
+.jar-rock-2 {
+  width: 65px; height: 52px;
+  background: linear-gradient(135deg, var(--rock2), #2980b9);
+  bottom: 8px; right: 15px;
+}
+
+.jar-rock-3 {
+  width: 60px; height: 50px;
+  background: linear-gradient(135deg, var(--rock3), #27ae60);
+  bottom: 55px; left: 50%;
+  transform: translateX(-50%);
+}
+
+.jar-rock.visible.placed {
+  transform: translateY(0);
+}
+
+/* Overflow rocks */
+.jar-rock.overflow {
+  z-index: 5;
+}
+
+.jar-rock-1.overflow { bottom: auto; top: -30px; left: 10px; transform: rotate(-15deg); }
+.jar-rock-2.overflow { bottom: auto; top: -50px; right: 5px; transform: rotate(10deg); }
+.jar-rock-3.overflow { bottom: auto; top: -70px; left: 40%; transform: rotate(-5deg); }
+
+/* Experiment buttons */
+.experiment-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.exp-btn {
+  padding: 18px 35px;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 250px;
+}
+
+.exp-btn:hover { transform: scale(1.05); }
+.exp-btn:active { transform: scale(0.98); }
+
+.btn-sand {
+  background: linear-gradient(135deg, var(--sand-color), #C4A96A);
+  color: var(--deep-blue);
+}
+
+.btn-rocks {
+  background: linear-gradient(135deg, var(--soft-green), #27ae60);
+  color: white;
+}
+
+.btn-reset {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 2px solid rgba(255,255,255,0.3);
+  padding: 10px 25px;
+  font-size: 0.9rem;
+}
+
+.exp-result {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  margin-top: 15px;
+  min-height: 2em;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.exp-result.show { opacity: 1; }
+
+.result-fail { color: #FF6B6B; }
+.result-success { color: var(--soft-green); }
+
+/* ========== RULES SLIDE ========== */
+.rules-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.rule-card {
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 25px 35px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  animation: slide-up 0.5s ease backwards;
+  max-width: 650px;
+}
+
+.rule-card:nth-child(1) { animation-delay: 0.2s; }
+.rule-card:nth-child(2) { animation-delay: 0.5s; }
+.rule-card:nth-child(3) { animation-delay: 0.8s; }
+
+.rule-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.rule-text {
+  text-align: left;
+}
+
+.rule-text strong {
+  display: block;
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  margin-bottom: 4px;
+}
+
+.rule-text span {
+  font-size: clamp(0.9rem, 1.6vw, 1.1rem);
+  opacity: 0.8;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== FOR YOU / FOR OTHERS ========== */
+.two-columns {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.column-card {
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 25px;
+  padding: 30px;
+  width: 320px;
+  animation: slide-up 0.6s ease backwards;
+}
+
+.column-card:nth-child(2) { animation-delay: 0.3s; }
+
+.column-card h3 { margin-bottom: 15px; }
+
+.example-list {
+  list-style: none;
+  text-align: left;
+}
+
+.example-list li {
+  padding: 8px 0;
+  font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.example-list li:last-child { border-bottom: none; }
+
+.example-list li::before {
+  content: '🪨 ';
+}
+
+/* ========== YOUR TURN ACTIVITY ========== */
+.activity-container {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.kid-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.kid-btn {
+  padding: 12px 24px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.kid-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+
+.kid-btn.selected {
+  background: var(--orange);
+  border-color: var(--orange);
+  transform: scale(1.08);
+}
+
+.kid-btn.done {
+  background: var(--soft-green);
+  border-color: var(--soft-green);
+}
+
+/* Stone picker */
+.stone-picker {
+  display: none;
+  animation: pop-in 0.3s ease;
+}
+
+.stone-picker.visible { display: block; }
+
+.picker-section {
+  margin-bottom: 20px;
+}
+
+.picker-section h3 {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  margin-bottom: 10px;
+}
+
+.preset-stones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.preset-stone {
+  padding: 8px 18px;
+  border-radius: 25px;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+  cursor: pointer;
+  transition: all 0.25s;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+}
+
+.preset-stone:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+
+.preset-stone.selected-stone {
+  background: var(--orange);
+  border-color: var(--orange);
+}
+
+.custom-input-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.custom-input {
+  padding: 10px 18px;
+  border-radius: 25px;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  width: 280px;
+  outline: none;
+}
+
+.custom-input::placeholder { color: rgba(255,255,255,0.4); }
+.custom-input:focus { border-color: var(--gold); }
+
+.add-custom-btn {
+  padding: 10px 20px;
+  border-radius: 25px;
+  border: none;
+  background: var(--gold);
+  color: var(--deep-blue);
+  font-family: 'Fredoka One', cursive;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-custom-btn:hover { transform: scale(1.05); }
+
+/* Selected stones display */
+.selected-stones-display {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 15px 0;
+  min-height: 50px;
+}
+
+.chosen-stone {
+  padding: 10px 20px;
+  border-radius: 40% 50% 45% 55%;
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  color: white;
+  animation: pop-in 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.chosen-stone:nth-child(1) { background: linear-gradient(135deg, var(--rock1), #c0392b); }
+.chosen-stone:nth-child(2) { background: linear-gradient(135deg, var(--rock2), #2980b9); }
+.chosen-stone:nth-child(3) { background: linear-gradient(135deg, var(--rock3), #27ae60); }
+
+.chosen-stone::after {
+  content: '✕';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.chosen-stone:hover::after { opacity: 1; }
+
+.submit-stones-btn {
+  padding: 16px 40px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--soft-green), #27ae60);
+  color: white;
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+  display: none;
+}
+
+.submit-stones-btn.visible { display: inline-block; }
+.submit-stones-btn:hover { transform: scale(1.06); box-shadow: 0 5px 25px rgba(107,203,119,0.4); }
+
+/* Kid's jar celebration */
+.kid-jar-result {
+  display: none;
+  animation: pop-in 0.5s ease;
+  text-align: center;
+}
+
+.kid-jar-result.visible { display: block; }
+
+.mini-jar {
+  position: relative;
+  width: 160px;
+  height: 220px;
+  margin: 0 auto 15px;
+  border: 3px solid rgba(255,255,255,0.5);
+  border-radius: 8px 8px 25px 25px;
+  background: rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+
+.mini-jar-sand {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(180deg, #E8D5A3, #C4A96A);
+  border-radius: 0 0 22px 22px;
+}
+
+.mini-jar .mini-rock {
+  position: absolute;
+  border-radius: 40% 50% 45% 55%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 6px 8px;
+  text-align: center;
+  line-height: 1.1;
+  z-index: 2;
+  animation: rock-drop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.mini-rock:nth-child(2) {
+  width: 65px; height: 48px;
+  background: linear-gradient(135deg, var(--rock1), #c0392b);
+  bottom: 25px; left: 10px;
+  animation-delay: 0.2s;
+}
+
+.mini-rock:nth-child(3) {
+  width: 60px; height: 45px;
+  background: linear-gradient(135deg, var(--rock2), #2980b9);
+  bottom: 25px; right: 10px;
+  animation-delay: 0.5s;
+}
+
+.mini-rock:nth-child(4) {
+  width: 58px; height: 44px;
+  background: linear-gradient(135deg, var(--rock3), #27ae60);
+  bottom: 68px; left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 0.8s;
+}
+
+@keyframes rock-drop {
+  from { opacity: 0; transform: translateY(-80px) rotate(-10deg); }
+  to { opacity: 1; transform: translateY(0) rotate(0deg); }
+}
+
+/* ========== CONFETTI ========== */
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 500;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -20px;
+  animation: confetti-fall 3s ease-in forwards;
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ========== CHALLENGE SLIDE ========== */
+.week-days {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.day-circle {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fredoka One', cursive;
+  font-size: 0.85rem;
+  animation: pop-in 0.4s ease backwards;
+  transition: all 0.3s;
+}
+
+.day-circle:nth-child(1) { animation-delay: 0.1s; }
+.day-circle:nth-child(2) { animation-delay: 0.2s; }
+.day-circle:nth-child(3) { animation-delay: 0.3s; }
+.day-circle:nth-child(4) { animation-delay: 0.4s; }
+.day-circle:nth-child(5) { animation-delay: 0.5s; }
+.day-circle:nth-child(6) { animation-delay: 0.6s; }
+.day-circle:nth-child(7) { animation-delay: 0.7s; }
+
+.day-circle:hover {
+  background: var(--soft-green);
+  border-color: var(--soft-green);
+  transform: scale(1.15);
+}
+
+/* ========== CLOSING SLIDE ========== */
+.closing-jar {
+  position: relative;
+  width: 200px;
+  height: 260px;
+  margin: 0 auto 30px;
+}
+
+.closing-jar .glow-rock {
+  position: absolute;
+  border-radius: 40% 50% 45% 55%;
+  animation: gentle-glow 2s ease-in-out infinite alternate;
+}
+
+.glow-rock:nth-child(1) {
+  width: 65px; height: 50px;
+  background: var(--rock1);
+  bottom: 40px; left: 25px;
+  animation-delay: 0s;
+}
+
+.glow-rock:nth-child(2) {
+  width: 60px; height: 48px;
+  background: var(--rock2);
+  bottom: 40px; right: 25px;
+  animation-delay: 0.7s;
+}
+
+.glow-rock:nth-child(3) {
+  width: 55px; height: 45px;
+  background: var(--rock3);
+  bottom: 82px; left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 1.4s;
+}
+
+.closing-jar-outline {
+  position: absolute;
+  inset: 0;
+  border: 3px solid rgba(255,255,255,0.4);
+  border-radius: 10px 10px 30px 30px;
+  background: rgba(255,255,255,0.03);
+}
+
+.closing-jar-sand {
+  position: absolute;
+  bottom: 0;
+  left: 3px;
+  right: 3px;
+  height: 30%;
+  background: linear-gradient(180deg, rgba(232,213,163,0.6), rgba(196,169,106,0.6));
+  border-radius: 0 0 28px 28px;
+}
+
+@keyframes gentle-glow {
+  from { box-shadow: 0 0 10px rgba(255,255,255,0.2); filter: brightness(1); }
+  to { box-shadow: 0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.2); filter: brightness(1.2); }
+}
+
+/* ========== WHAT ARE YOUR ROCKS ========== */
+.examples-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+  max-width: 750px;
+}
+
+.example-rock {
+  padding: 14px 24px;
+  border-radius: 40% 50% 45% 55% / 50% 45% 55% 50%;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+  animation: pop-in 0.4s ease backwards;
+}
+
+.example-rock:nth-child(1) { background: rgba(231,76,60,0.3); border: 2px solid var(--rock1); animation-delay: 0.1s; }
+.example-rock:nth-child(2) { background: rgba(52,152,219,0.3); border: 2px solid var(--rock2); animation-delay: 0.2s; }
+.example-rock:nth-child(3) { background: rgba(46,204,113,0.3); border: 2px solid var(--rock3); animation-delay: 0.3s; }
+.example-rock:nth-child(4) { background: rgba(249,202,36,0.3); border: 2px solid var(--gold); animation-delay: 0.4s; }
+.example-rock:nth-child(5) { background: rgba(155,89,182,0.3); border: 2px solid var(--purple); animation-delay: 0.5s; }
+.example-rock:nth-child(6) { background: rgba(232,67,147,0.3); border: 2px solid var(--pink); animation-delay: 0.6s; }
+
+/* ========== CLASS VIEW ========== */
+.class-jars-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.class-jar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  animation: pop-in 0.4s ease backwards;
+}
+
+.class-jar-card:hover { transform: scale(1.08); }
+
+.class-jar-card .cj-name {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+  margin-bottom: 6px;
+  transition: color 0.3s;
+}
+
+.class-jar-card .cj-jar {
+  position: relative;
+  width: 110px;
+  height: 155px;
+  border: 3px solid rgba(255,255,255,0.35);
+  border-radius: 8px 8px 22px 22px;
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.class-jar-card.submitted .cj-jar {
+  border-color: rgba(107,203,119,0.6);
+  box-shadow: 0 0 15px rgba(107,203,119,0.2);
+}
+
+.class-jar-card.waiting .cj-jar {
+  border-color: rgba(255,255,255,0.15);
+  opacity: 0.5;
+}
+
+.class-jar-card .cj-sand {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 25%;
+  background: linear-gradient(180deg, #E8D5A3, #C4A96A);
+  border-radius: 0 0 19px 19px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.class-jar-card.submitted .cj-sand { opacity: 1; }
+
+.class-jar-card .cj-rock {
+  position: absolute;
+  border-radius: 40% 50% 45% 55%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5rem;
+  font-weight: 700;
+  padding: 4px;
+  text-align: center;
+  line-height: 1.1;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.class-jar-card.submitted .cj-rock { opacity: 1; }
+
+.cj-rock:nth-child(2) {
+  width: 48px; height: 36px;
+  background: linear-gradient(135deg, var(--rock1), #c0392b);
+  bottom: 20px; left: 5px;
+}
+
+.cj-rock:nth-child(3) {
+  width: 44px; height: 34px;
+  background: linear-gradient(135deg, var(--rock2), #2980b9);
+  bottom: 20px; right: 5px;
+}
+
+.cj-rock:nth-child(4) {
+  width: 42px; height: 33px;
+  background: linear-gradient(135deg, var(--rock3), #27ae60);
+  bottom: 50px; left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Expanded jar tooltip/modal */
+.class-jar-detail {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(27,42,74,0.95);
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 25px;
+  padding: 30px 40px;
+  z-index: 300;
+  min-width: 300px;
+  max-width: 450px;
+  animation: pop-in 0.3s ease;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.class-jar-detail h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.class-jar-detail .detail-stone {
+  padding: 10px 18px;
+  border-radius: 40% 50% 45% 55%;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 8px;
+  display: inline-block;
+  animation: rock-drop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.class-jar-detail .detail-stone:nth-child(1) { background: linear-gradient(135deg, var(--rock1), #c0392b); animation-delay: 0.1s; }
+.class-jar-detail .detail-stone:nth-child(2) { background: linear-gradient(135deg, var(--rock2), #2980b9); animation-delay: 0.3s; }
+.class-jar-detail .detail-stone:nth-child(3) { background: linear-gradient(135deg, var(--rock3), #27ae60); animation-delay: 0.5s; }
+
+.class-jar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 299;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .slide { padding: 25px 20px; }
+  .jar-experiment { gap: 25px; }
+  .two-columns { gap: 20px; }
+  .column-card { width: 280px; padding: 20px; }
+  .nav-arrow { width: 40px; height: 40px; font-size: 1.1rem; }
+  .kid-btn { padding: 8px 16px; }
+}
+
+/* Slide-specific reanimation */
+.slide.active .busy-item,
+.slide.active .rule-card,
+.slide.active .column-card,
+.slide.active .day-circle,
+.slide.active .example-rock {
+  animation-play-state: running;
+}
+</style>
+</head>
+<body>
+
+<!-- Music Toggle -->
+<button id="music-toggle" title="Toggle ambient music">🔇</button>
+
+<!-- Nav Arrows -->
+<button class="nav-arrow" id="prev-arrow">◀</button>
+<button class="nav-arrow" id="next-arrow">▶</button>
+
+<!-- Nav Dots -->
+<div id="nav-dots"></div>
+
+<!-- ==================== SLIDES ==================== -->
+<div id="deck">
+
+  <!-- SLIDE 1: TITLE -->
+  <div class="slide bg-gradient-warm active" data-slide="0">
+    <div class="title-jar-wrap">
+      <div class="title-rock"></div>
+      <div class="title-rock"></div>
+      <div class="title-rock"></div>
+      <svg class="jar-svg" viewBox="0 0 200 260">
+        <rect class="jar-lid" x="55" y="8" width="90" height="20" rx="5"/>
+        <path class="jar-body" d="M45,30 L45,30 Q40,30 38,45 L30,230 Q28,255 55,255 L145,255 Q172,255 170,230 L162,45 Q160,30 155,30 Z"/>
+      </svg>
+    </div>
+    <h1 class="title-glow">Three Stones</h1>
+    <p class="subtitle">The secret to a day that actually matters</p>
+  </div>
+
+  <!-- SLIDE 2: THE BUSY DAY -->
+  <div class="slide bg-gradient-sky" data-slide="1">
+    <h2>Ever had a day where you're busy ALL day...</h2>
+    <p style="font-size: clamp(1.3rem, 2.8vw, 2rem); margin: 15px 0; opacity: 0.9;">...but nothing you did actually <em>mattered</em>?</p>
+    <div class="busy-items">
+      <span class="busy-item">📱 Scrolling</span>
+      <span class="busy-item">📝 Homework</span>
+      <span class="busy-item">🧹 Chores</span>
+      <span class="busy-item">🔔 Notifications</span>
+      <span class="busy-item">⚽ Practice</span>
+      <span class="busy-item">📺 YouTube</span>
+      <span class="busy-item">🎮 Games</span>
+      <span class="busy-item">😩 Worrying</span>
+    </div>
+    <p style="margin-top: 25px; font-weight: 700; font-size: clamp(1.1rem, 2.2vw, 1.5rem);">That's a lot of <span style="color: var(--sand-color);">sand</span>. But where are the <span style="color: var(--gold);">rocks</span>?</p>
+  </div>
+
+  <!-- SLIDE 3: JAR EXPERIMENT -->
+  <div class="slide bg-gradient-calm" data-slide="2">
+    <h2>The Jar Experiment</h2>
+    <p style="margin-bottom: 20px;">What happens when you fill your day?</p>
+    <div class="jar-experiment">
+      <div class="jar-demo-wrap">
+        <div class="jar-demo-lid"></div>
+        <div class="jar-demo-outline">
+          <div class="jar-sand" id="jar-sand"></div>
+          <div class="jar-rock jar-rock-1" id="rock1"></div>
+          <div class="jar-rock jar-rock-2" id="rock2"></div>
+          <div class="jar-rock jar-rock-3" id="rock3"></div>
+        </div>
+      </div>
+      <div class="experiment-controls">
+        <button class="exp-btn btn-sand" id="btn-sand-first" onclick="runSandFirst()">🏜️ Fill with sand first</button>
+        <button class="exp-btn btn-rocks" id="btn-rocks-first" onclick="runRocksFirst()">🪨 Rocks first!</button>
+        <button class="exp-btn btn-reset" id="btn-reset" onclick="resetJar()" style="display:none;">↩ Try again</button>
+        <div class="exp-result" id="exp-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: WHAT ARE YOUR ROCKS -->
+  <div class="slide bg-gradient-warm" data-slide="3">
+    <h2>What Are YOUR Rocks?</h2>
+    <p>Your "stones" are the 3 things that matter most today.<br>Not homework — that's sand. These are <strong>bigger</strong>.</p>
+    <div class="examples-grid">
+      <div class="example-rock">Be a good friend to someone</div>
+      <div class="example-rock">Practice guitar for 20 min</div>
+      <div class="example-rock">Help mom with dinner</div>
+      <div class="example-rock">Read a chapter of my book</div>
+      <div class="example-rock">Write in my journal</div>
+      <div class="example-rock">Make someone laugh</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: THE RULES -->
+  <div class="slide bg-gradient-purple" data-slide="4">
+    <h2>Three Simple Rules</h2>
+    <ul class="rules-list">
+      <li class="rule-card">
+        <span class="rule-icon">🎯</span>
+        <div class="rule-text">
+          <strong>You CAN finish it today</strong>
+          <span>No "become an astronaut" — something real, something doable.</span>
+        </div>
+      </li>
+      <li class="rule-card">
+        <span class="rule-icon">✅</span>
+        <div class="rule-text">
+          <strong>You'll KNOW when it's done</strong>
+          <span>You can check it off. "Did I do it? Yes!"</span>
+        </div>
+      </li>
+      <li class="rule-card">
+        <span class="rule-icon">❤️</span>
+        <div class="rule-text">
+          <strong>It matters to YOU</strong>
+          <span>Not because someone told you to — because <em>you</em> chose it.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- SLIDE 6: FOR YOU & FOR OTHERS -->
+  <div class="slide bg-gradient-green" data-slide="5">
+    <h2>For You & For Others</h2>
+    <p style="margin-bottom: 5px;">At least 1 stone for yourself. At least 1 for someone else.</p>
+    <div class="two-columns">
+      <div class="column-card">
+        <h3>🌟 For Me</h3>
+        <ul class="example-list">
+          <li>Learn something new</li>
+          <li>Create something cool</li>
+          <li>Take time to rest</li>
+          <li>Practice a skill I care about</li>
+          <li>Read something I enjoy</li>
+        </ul>
+      </div>
+      <div class="column-card">
+        <h3>🤝 For Others</h3>
+        <ul class="example-list">
+          <li>Help a friend with something</li>
+          <li>Do something kind — no reason</li>
+          <li>Be a great teammate</li>
+          <li>Listen — really listen — to someone</li>
+          <li>Make someone's day better</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: YOUR TURN -->
+  <div class="slide bg-gradient-calm" data-slide="6" style="justify-content: flex-start; padding-top: 30px;">
+    <h2>YOUR TURN! 🎉</h2>
+    <p style="margin-bottom: 15px;">Pick your name, then choose your 3 stones for tomorrow.</p>
+    <div class="activity-container">
+      <div class="kid-selector" id="kid-selector"></div>
+      <div class="stone-picker" id="stone-picker">
+        <div id="active-kid-name" style="font-family: 'Fredoka One', cursive; font-size: 1.5rem; margin-bottom: 12px;"></div>
+
+        <div class="picker-section">
+          <h3>🌟 For Me</h3>
+          <div class="preset-stones" id="presets-me"></div>
+        </div>
+
+        <div class="picker-section">
+          <h3>🤝 For Others</h3>
+          <div class="preset-stones" id="presets-others"></div>
+        </div>
+
+        <div class="custom-input-row">
+          <input class="custom-input" id="custom-stone-input" placeholder="Or write your own stone..." maxlength="60">
+          <button class="add-custom-btn" onclick="addCustomStone()">+ Add</button>
+        </div>
+
+        <div class="selected-stones-display" id="selected-stones"></div>
+        <button class="submit-stones-btn" id="submit-stones-btn" onclick="submitStones()">Drop them in the jar! 🪨</button>
+      </div>
+
+      <div class="kid-jar-result" id="kid-jar-result"></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: CLASS VIEW -->
+  <div class="slide bg-gradient-green" data-slide="7" style="justify-content: flex-start; padding-top: 30px;">
+    <h2>Our Class Jars! 🏆</h2>
+    <p style="margin-bottom: 20px;">Tap any jar to see their stones</p>
+    <div class="class-jars-grid" id="class-jars-grid"></div>
+    <div class="class-celebration" id="class-celebration" style="display: none;">
+      <h2 style="color: var(--gold); margin-top: 15px;">🎉 Everyone picked their stones! 🎉</h2>
+      <p style="font-size: clamp(1rem, 2vw, 1.3rem);">Look at all those full jars!</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: THE CHALLENGE -->
+  <div class="slide bg-gradient-sunset" data-slide="8">
+    <h2>The One-Week Challenge</h2>
+    <p style="margin-bottom: 5px;">Every morning, pick your three stones.<br>See how it feels after 7 days.</p>
+    <div class="week-days">
+      <div class="day-circle">Mon</div>
+      <div class="day-circle">Tue</div>
+      <div class="day-circle">Wed</div>
+      <div class="day-circle">Thu</div>
+      <div class="day-circle">Fri</div>
+      <div class="day-circle">Sat</div>
+      <div class="day-circle">Sun</div>
+    </div>
+    <p style="margin-top: 30px; font-size: clamp(1.1rem, 2.2vw, 1.5rem); font-weight: 700;">Just three things. That's all it takes.</p>
+  </div>
+
+  <!-- SLIDE 10: CLOSING -->
+  <div class="slide bg-gradient-calm" data-slide="9">
+    <div class="closing-jar">
+      <div class="glow-rock"></div>
+      <div class="glow-rock"></div>
+      <div class="glow-rock"></div>
+      <div class="closing-jar-sand"></div>
+      <div class="closing-jar-outline"></div>
+    </div>
+    <h1 class="title-glow" style="font-size: clamp(2rem, 5vw, 3.5rem);">The jar is full.</h1>
+    <p style="font-size: clamp(1.3rem, 2.5vw, 2rem); opacity: 0.85; margin-top: 10px;">And that's enough.</p>
+    <p style="margin-top: 40px; font-size: clamp(0.9rem, 1.5vw, 1.1rem); opacity: 0.5;">Three Stones • Made for Noah's class 🪨</p>
+  </div>
+
+</div>
+
+<!-- Confetti container -->
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+// ==================== SLIDE NAVIGATION ====================
+const slides = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById('nav-dots');
+let currentSlide = 0;
+const totalSlides = slides.length;
+
+// Create dots
+for (let i = 0; i < totalSlides; i++) {
+  const dot = document.createElement('button');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goToSlide(i));
+  dotsContainer.appendChild(dot);
+}
+
+function goToSlide(n) {
+  if (n < 0 || n >= totalSlides || n === currentSlide) return;
+
+  const oldSlide = slides[currentSlide];
+  const newSlide = slides[n];
+  const dots = document.querySelectorAll('.nav-dot');
+
+  // Direction
+  const goingForward = n > currentSlide;
+
+  oldSlide.classList.remove('active');
+  oldSlide.classList.add(goingForward ? 'exit-left' : '');
+  oldSlide.style.transform = goingForward ? 'translateX(-60px)' : 'translateX(60px)';
+
+  newSlide.style.transform = goingForward ? 'translateX(60px)' : 'translateX(-60px)';
+
+  setTimeout(() => {
+    newSlide.classList.add('active');
+    newSlide.style.transform = '';
+  }, 30);
+
+  setTimeout(() => {
+    oldSlide.classList.remove('exit-left');
+    oldSlide.style.transform = '';
+  }, 550);
+
+  dots[currentSlide].classList.remove('active');
+  dots[n].classList.add('active');
+  currentSlide = n;
+}
+
+function nextSlide() { goToSlide(currentSlide + 1); }
+function prevSlide() { goToSlide(currentSlide - 1); }
+
+document.getElementById('next-arrow').addEventListener('click', nextSlide);
+document.getElementById('prev-arrow').addEventListener('click', prevSlide);
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+});
+
+// Touch swipe
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', (e) => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 60) {
+    diff > 0 ? nextSlide() : prevSlide();
+  }
+});
+
+// ==================== JAR EXPERIMENT ====================
+let jarState = 'empty';
+
+function runSandFirst() {
+  if (jarState !== 'empty') return;
+  jarState = 'animating';
+
+  document.getElementById('btn-sand-first').style.opacity = '0.5';
+  document.getElementById('btn-rocks-first').style.opacity = '0.5';
+
+  const sand = document.getElementById('jar-sand');
+  sand.classList.add('filling');
+
+  setTimeout(() => {
+    // Try to add rocks — they overflow!
+    const r1 = document.getElementById('rock1');
+    const r2 = document.getElementById('rock2');
+    const r3 = document.getElementById('rock3');
+
+    r1.classList.add('visible', 'overflow');
+    setTimeout(() => r2.classList.add('visible', 'overflow'), 300);
+    setTimeout(() => r3.classList.add('visible', 'overflow'), 600);
+
+    setTimeout(() => {
+      const result = document.getElementById('exp-result');
+      result.textContent = "😬 The rocks don't fit! Too much sand...";
+      result.className = 'exp-result show result-fail';
+      document.getElementById('btn-reset').style.display = 'inline-block';
+      jarState = 'done-sand';
+    }, 1200);
+  }, 1800);
+}
+
+function runRocksFirst() {
+  if (jarState !== 'empty') return;
+  jarState = 'animating';
+
+  document.getElementById('btn-sand-first').style.opacity = '0.5';
+  document.getElementById('btn-rocks-first').style.opacity = '0.5';
+
+  const r1 = document.getElementById('rock1');
+  const r2 = document.getElementById('rock2');
+  const r3 = document.getElementById('rock3');
+
+  // Drop rocks in with delay
+  r1.classList.add('visible', 'placed');
+  setTimeout(() => r2.classList.add('visible', 'placed'), 500);
+  setTimeout(() => r3.classList.add('visible', 'placed'), 1000);
+
+  setTimeout(() => {
+    // Now add sand — it fills around the rocks
+    const sand = document.getElementById('jar-sand');
+    sand.classList.add('partial');
+
+    setTimeout(() => {
+      const result = document.getElementById('exp-result');
+      result.textContent = "🎉 Everything fits! Rocks first, sand fills the gaps!";
+      result.className = 'exp-result show result-success';
+      document.getElementById('btn-reset').style.display = 'inline-block';
+      jarState = 'done-rocks';
+    }, 1200);
+  }, 1700);
+}
+
+function resetJar() {
+  const sand = document.getElementById('jar-sand');
+  sand.className = 'jar-sand';
+
+  ['rock1', 'rock2', 'rock3'].forEach(id => {
+    const el = document.getElementById(id);
+    el.className = el.className.replace(/visible|overflow|placed/g, '').trim();
+    // Reset to base class
+    const num = id.replace('rock', '');
+    el.className = 'jar-rock jar-rock-' + num;
+  });
+
+  document.getElementById('exp-result').className = 'exp-result';
+  document.getElementById('btn-reset').style.display = 'none';
+  document.getElementById('btn-sand-first').style.opacity = '1';
+  document.getElementById('btn-rocks-first').style.opacity = '1';
+  jarState = 'empty';
+}
+
+// ==================== YOUR TURN ACTIVITY ====================
+const kids = ['Noah', 'Max', 'Willa', 'Briony', 'Gillian', 'Jordan', 'Lyle'];
+const kidColors = ['#FF6B35', '#E74C3C', '#E84393', '#9B59B6', '#3498DB', '#F7931E', '#2ECC71'];
+const kidData = {};
+kids.forEach(k => kidData[k] = { stones: [], submitted: false });
+
+const presetsForMe = [
+  'Read a chapter of a book',
+  'Practice something I love',
+  'Draw or create art',
+  'Write in a journal',
+  'Learn one new thing',
+  'Take 10 minutes just for me',
+  'Exercise or move my body',
+  'Work on a personal project',
+];
+
+const presetsForOthers = [
+  'Help a friend with something',
+  'Do something kind — no reason',
+  'Listen to someone who needs it',
+  'Make someone laugh',
+  'Help with dinner or chores',
+  'Say thank you & mean it',
+  'Include someone who seems left out',
+  'Be a great teammate',
+];
+
+let activeKid = null;
+let selectedStones = [];
+
+// Build kid selector
+const kidSelector = document.getElementById('kid-selector');
+kids.forEach((name, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'kid-btn';
+  btn.textContent = name;
+  btn.style.borderColor = kidColors[i];
+  btn.id = 'kid-btn-' + name;
+  btn.addEventListener('click', () => selectKid(name, i));
+  kidSelector.appendChild(btn);
+});
+
+// Build preset stones
+function buildPresets() {
+  const meContainer = document.getElementById('presets-me');
+  const othersContainer = document.getElementById('presets-others');
+
+  presetsForMe.forEach(text => {
+    const btn = document.createElement('button');
+    btn.className = 'preset-stone';
+    btn.textContent = text;
+    btn.addEventListener('click', () => toggleStone(text, btn));
+    meContainer.appendChild(btn);
+  });
+
+  presetsForOthers.forEach(text => {
+    const btn = document.createElement('button');
+    btn.className = 'preset-stone';
+    btn.textContent = text;
+    btn.addEventListener('click', () => toggleStone(text, btn));
+    othersContainer.appendChild(btn);
+  });
+}
+buildPresets();
+
+function selectKid(name, idx) {
+  if (kidData[name].submitted) {
+    showKidResult(name);
+    return;
+  }
+
+  activeKid = name;
+  selectedStones = [...kidData[name].stones];
+
+  // Update button states
+  document.querySelectorAll('.kid-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('kid-btn-' + name).classList.add('selected');
+
+  // Show picker
+  document.getElementById('stone-picker').classList.add('visible');
+  document.getElementById('kid-jar-result').classList.remove('visible');
+  document.getElementById('active-kid-name').textContent = name + "'s Stones";
+  document.getElementById('active-kid-name').style.color = kidColors[idx];
+
+  // Reset preset button states
+  document.querySelectorAll('.preset-stone').forEach(b => {
+    b.classList.toggle('selected-stone', selectedStones.includes(b.textContent));
+  });
+
+  updateSelectedDisplay();
+}
+
+function toggleStone(text, btnEl) {
+  if (!activeKid) return;
+
+  const idx = selectedStones.indexOf(text);
+  if (idx > -1) {
+    selectedStones.splice(idx, 1);
+    btnEl.classList.remove('selected-stone');
+  } else {
+    if (selectedStones.length >= 3) {
+      // Shake effect
+      btnEl.style.animation = 'none';
+      btnEl.offsetHeight;
+      btnEl.style.animation = '';
+      return;
+    }
+    selectedStones.push(text);
+    btnEl.classList.add('selected-stone');
+  }
+
+  kidData[activeKid].stones = [...selectedStones];
+  updateSelectedDisplay();
+}
+
+function addCustomStone() {
+  const input = document.getElementById('custom-stone-input');
+  const text = input.value.trim();
+  if (!text || !activeKid || selectedStones.length >= 3) return;
+
+  selectedStones.push(text);
+  kidData[activeKid].stones = [...selectedStones];
+  input.value = '';
+  updateSelectedDisplay();
+}
+
+// Allow Enter key to add custom stone
+document.getElementById('custom-stone-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') addCustomStone();
+});
+
+function updateSelectedDisplay() {
+  const container = document.getElementById('selected-stones');
+  container.innerHTML = '';
+
+  selectedStones.forEach((text, i) => {
+    const el = document.createElement('div');
+    el.className = 'chosen-stone';
+    el.textContent = text;
+    el.title = 'Click to remove';
+    el.addEventListener('click', () => removeStone(i));
+    container.appendChild(el);
+  });
+
+  const submitBtn = document.getElementById('submit-stones-btn');
+  if (selectedStones.length === 3) {
+    submitBtn.classList.add('visible');
+  } else {
+    submitBtn.classList.remove('visible');
+  }
+}
+
+function removeStone(idx) {
+  const removed = selectedStones.splice(idx, 1)[0];
+  kidData[activeKid].stones = [...selectedStones];
+
+  // Update preset buttons
+  document.querySelectorAll('.preset-stone').forEach(b => {
+    if (b.textContent === removed) b.classList.remove('selected-stone');
+  });
+
+  updateSelectedDisplay();
+}
+
+function submitStones() {
+  if (!activeKid || selectedStones.length !== 3) return;
+
+  kidData[activeKid].submitted = true;
+  kidData[activeKid].stones = [...selectedStones];
+
+  // Mark kid as done
+  const btn = document.getElementById('kid-btn-' + activeKid);
+  btn.classList.remove('selected');
+  btn.classList.add('done');
+
+  showKidResult(activeKid);
+  launchConfetti();
+}
+
+function showKidResult(name) {
+  const picker = document.getElementById('stone-picker');
+  picker.classList.remove('visible');
+
+  const resultDiv = document.getElementById('kid-jar-result');
+  resultDiv.innerHTML = '';
+  resultDiv.classList.add('visible');
+
+  const heading = document.createElement('h3');
+  heading.textContent = name + "'s Jar 🎉";
+  heading.style.color = kidColors[kids.indexOf(name)];
+  resultDiv.appendChild(heading);
+
+  const jar = document.createElement('div');
+  jar.className = 'mini-jar';
+
+  const sand = document.createElement('div');
+  sand.className = 'mini-jar-sand';
+  jar.appendChild(sand);
+
+  kidData[name].stones.forEach((text, i) => {
+    const rock = document.createElement('div');
+    rock.className = 'mini-rock';
+    // Truncate long text
+    rock.textContent = text.length > 22 ? text.substring(0, 20) + '…' : text;
+    jar.appendChild(rock);
+  });
+
+  resultDiv.appendChild(jar);
+
+  const msg = document.createElement('p');
+  msg.textContent = 'Amazing choices, ' + name + '! 🌟';
+  msg.style.marginTop = '10px';
+  msg.style.fontWeight = '700';
+  resultDiv.appendChild(msg);
+
+  // Button to go back to selector
+  const backBtn = document.createElement('button');
+  backBtn.className = 'exp-btn btn-reset';
+  backBtn.textContent = '← Pick another person';
+  backBtn.style.marginTop = '15px';
+  backBtn.style.display = 'inline-block';
+  backBtn.addEventListener('click', () => {
+    resultDiv.classList.remove('visible');
+    activeKid = null;
+    selectedStones = [];
+    document.querySelectorAll('.kid-btn').forEach(b => b.classList.remove('selected'));
+  });
+  resultDiv.appendChild(backBtn);
+}
+
+// ==================== CONFETTI ====================
+function launchConfetti() {
+  const container = document.getElementById('confetti-container');
+  const colors = ['#FF6B35', '#F9CA24', '#E74C3C', '#3498DB', '#2ECC71', '#9B59B6', '#E84393', '#FF8C6B'];
+
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (Math.random() * 8 + 5) + 'px';
+    piece.style.height = (Math.random() * 8 + 5) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    piece.style.animationDelay = (Math.random() * 0.8) + 's';
+    container.appendChild(piece);
+  }
+
+  setTimeout(() => {
+    container.innerHTML = '';
+  }, 4000);
+}
+
+// ==================== AMBIENT MUSIC (Web Audio API) ====================
+let audioCtx = null;
+let musicPlaying = false;
+let musicNodes = [];
+
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function startMusic() {
+  initAudio();
+  if (musicPlaying) return;
+  musicPlaying = true;
+
+  const masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.08;
+  masterGain.connect(audioCtx.destination);
+
+  // Gentle ambient chord — C major 7 spread
+  const frequencies = [130.81, 164.81, 196.00, 246.94]; // C3, E3, G3, B3
+  const now = audioCtx.currentTime;
+
+  frequencies.forEach((freq, i) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+
+    // Slow LFO for gentle movement
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.1 + i * 0.05;
+    lfoGain.gain.value = freq * 0.005;
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc.frequency);
+    lfo.start(now);
+
+    gain.gain.value = 0;
+    gain.gain.linearRampToValueAtTime(0.25, now + 2);
+
+    osc.connect(gain);
+    gain.connect(masterGain);
+    osc.start(now);
+
+    musicNodes.push({ osc, gain, lfo, lfoGain });
+  });
+
+  // Add a very subtle high pad
+  const padOsc = audioCtx.createOscillator();
+  const padGain = audioCtx.createGain();
+  padOsc.type = 'triangle';
+  padOsc.frequency.value = 523.25; // C5
+  padGain.gain.value = 0;
+  padGain.gain.linearRampToValueAtTime(0.06, now + 3);
+  padOsc.connect(padGain);
+  padGain.connect(masterGain);
+  padOsc.start(now);
+  musicNodes.push({ osc: padOsc, gain: padGain });
+
+  musicNodes._masterGain = masterGain;
+
+  document.getElementById('music-toggle').textContent = '🔊';
+  document.getElementById('music-toggle').classList.add('playing');
+}
+
+function stopMusic() {
+  if (!musicPlaying || !audioCtx) return;
+  musicPlaying = false;
+
+  const now = audioCtx.currentTime;
+  musicNodes.forEach(n => {
+    if (n.gain) n.gain.gain.linearRampToValueAtTime(0, now + 1);
+    if (n.osc) n.osc.stop(now + 1.1);
+    if (n.lfo) n.lfo.stop(now + 1.1);
+  });
+
+  setTimeout(() => {
+    musicNodes = [];
+  }, 1500);
+
+  document.getElementById('music-toggle').textContent = '🔇';
+  document.getElementById('music-toggle').classList.remove('playing');
+}
+
+document.getElementById('music-toggle').addEventListener('click', () => {
+  if (musicPlaying) stopMusic();
+  else startMusic();
+});
+
+// ==================== CLICK-TO-ADVANCE (optional, on non-interactive slides) ====================
+// Disabled for interactive slides (jar experiment #2, activity #6)
+document.addEventListener('click', (e) => {
+  // Don't advance on button/input clicks or interactive slides
+  if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.nav-arrow') ||
+      e.target.closest('#nav-dots') || e.target.closest('#music-toggle')) return;
+
+  const interactiveSlides = [2, 6, 7]; // jar experiment, activity, and class view
+  if (interactiveSlides.includes(currentSlide)) return;
+
+  nextSlide();
+});
+
+// ==================== KEYBOARD SHORTCUT FOR CUSTOM STONE ====================
+document.getElementById('custom-stone-input').addEventListener('keydown', (e) => {
+  e.stopPropagation(); // Prevent slide navigation while typing
+});
+
+// ==================== CLASS VIEW ====================
+function buildClassView() {
+  const grid = document.getElementById('class-jars-grid');
+  grid.innerHTML = '';
+
+  kids.forEach((name, i) => {
+    const card = document.createElement('div');
+    card.className = 'class-jar-card ' + (kidData[name].submitted ? 'submitted' : 'waiting');
+    card.style.animationDelay = (i * 0.1) + 's';
+    card.addEventListener('click', () => showJarDetail(name, i));
+
+    const label = document.createElement('div');
+    label.className = 'cj-name';
+    label.textContent = name;
+    label.style.color = kidColors[i];
+    card.appendChild(label);
+
+    const jar = document.createElement('div');
+    jar.className = 'cj-jar';
+
+    const sand = document.createElement('div');
+    sand.className = 'cj-sand';
+    jar.appendChild(sand);
+
+    // Add rocks with text
+    if (kidData[name].submitted) {
+      kidData[name].stones.forEach((text, si) => {
+        const rock = document.createElement('div');
+        rock.className = 'cj-rock';
+        rock.textContent = text.length > 12 ? text.substring(0, 10) + '…' : text;
+        jar.appendChild(rock);
+      });
+    } else {
+      // Empty placeholder rocks
+      for (let s = 0; s < 3; s++) {
+        const rock = document.createElement('div');
+        rock.className = 'cj-rock';
+        rock.textContent = '?';
+        rock.style.opacity = '0.2';
+        jar.appendChild(rock);
+      }
+    }
+
+    card.appendChild(jar);
+    grid.appendChild(card);
+  });
+
+  // Check if all done
+  const allDone = kids.every(k => kidData[k].submitted);
+  if (allDone) {
+    document.getElementById('class-celebration').style.display = 'block';
+    launchConfetti();
+  }
+}
+
+function showJarDetail(name, idx) {
+  if (!kidData[name].submitted) return;
+
+  // Remove existing detail
+  closeJarDetail();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'class-jar-overlay';
+  overlay.addEventListener('click', closeJarDetail);
+  document.body.appendChild(overlay);
+
+  const detail = document.createElement('div');
+  detail.className = 'class-jar-detail';
+  detail.id = 'jar-detail-popup';
+
+  const heading = document.createElement('h3');
+  heading.textContent = name + "'s Stones";
+  heading.style.color = kidColors[idx];
+  detail.appendChild(heading);
+
+  const stonesWrap = document.createElement('div');
+  kidData[name].stones.forEach(text => {
+    const stone = document.createElement('div');
+    stone.className = 'detail-stone';
+    stone.textContent = text;
+    stonesWrap.appendChild(stone);
+  });
+  detail.appendChild(stonesWrap);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'exp-btn btn-reset';
+  closeBtn.textContent = '✕ Close';
+  closeBtn.style.marginTop = '20px';
+  closeBtn.style.display = 'inline-block';
+  closeBtn.addEventListener('click', closeJarDetail);
+  detail.appendChild(closeBtn);
+
+  document.body.appendChild(detail);
+}
+
+function closeJarDetail() {
+  const popup = document.getElementById('jar-detail-popup');
+  if (popup) popup.remove();
+  const overlay = document.querySelector('.class-jar-overlay');
+  if (overlay) overlay.remove();
+}
+
+// Refresh class view whenever we navigate to that slide
+const origGoToSlide = goToSlide;
+goToSlide = function(n) {
+  origGoToSlide(n);
+  if (n === 7) buildClassView(); // Class View slide
+};
+</script>
+</body>
+</html>
