@@ -380,6 +380,48 @@ p, li {
 .busy-item:nth-child(7) { animation-delay: 0.7s; }
 .busy-item:nth-child(8) { animation-delay: 0.8s; }
 
+/* Busy Day add row */
+.busy-add-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.busy-add-input {
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  font-weight: 600;
+  width: 280px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.busy-add-input::placeholder { color: rgba(255,255,255,0.4); }
+.busy-add-input:focus { border-color: var(--gold); }
+
+.busy-add-btn {
+  padding: 10px 22px;
+  border-radius: 30px;
+  border: none;
+  background: var(--gold);
+  color: var(--deep-blue);
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.busy-add-btn:hover { transform: scale(1.06); background: #ffe066; }
+.busy-add-btn:active { transform: scale(0.97); }
+.busy-add-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
 @keyframes pop-in {
   from { opacity: 0; transform: scale(0.7); }
   to { opacity: 1; transform: scale(1); }
@@ -1363,21 +1405,18 @@ p, li {
     <p class="subtitle">The secret to a day that actually matters</p>
   </div>
 
-  <!-- SLIDE 2: THE BUSY DAY -->
+  <!-- SLIDE 2: THE BUSY DAY (interactive, persisted via /_db/) -->
   <div class="slide bg-gradient-sky" data-slide="1">
     <h2>Ever had a day where you're busy ALL day...</h2>
     <p style="font-size: clamp(1.3rem, 2.8vw, 2rem); margin: 15px 0; opacity: 0.9;">...but nothing you did actually <em>mattered</em>?</p>
-    <div class="busy-items">
-      <span class="busy-item">📝 Homework</span>
-      <span class="busy-item">🧹 Chores</span>
-      <span class="busy-item">📺 Watching TV</span>
-      <span class="busy-item">🎮 Video games</span>
-      <span class="busy-item">😩 Worrying</span>
-      <span class="busy-item">🗣️ Arguing</span>
-      <span class="busy-item">⏰ Waiting around</span>
-      <span class="busy-item">😴 Being bored</span>
+    <div class="busy-items" id="busy-items-cloud">
+      <!-- Populated by JS from /_db/busy-items -->
     </div>
-    <p style="margin-top: 25px; font-weight: 700; font-size: clamp(1.1rem, 2.2vw, 1.5rem);">That's a lot of <span style="color: var(--sand-color);">sand</span>. But where are the <span style="color: var(--gold);">rocks</span>?</p>
+    <div class="busy-add-row">
+      <input class="busy-add-input" id="busy-add-input" placeholder="What eats up YOUR time?" maxlength="50">
+      <button class="busy-add-btn" id="busy-add-btn" onclick="addBusyItem()">+ Add</button>
+    </div>
+    <p style="margin-top: 20px; font-weight: 700; font-size: clamp(1.1rem, 2.2vw, 1.5rem);">That's a lot of <span style="color: var(--sand-color);">sand</span>. But where are the <span style="color: var(--gold);">rocks</span>?</p>
   </div>
 
   <!-- SLIDE 3: JAR EXPERIMENT -->
@@ -1739,7 +1778,7 @@ document.addEventListener('touchstart', (e) => {
   touchStartY = e.touches[0].clientY;
 });
 document.addEventListener('touchend', (e) => {
-  const interactiveSlides = [2, 8, 9]; // jar experiment, activity, class view
+  const interactiveSlides = [1, 2, 8, 9]; // busy day, jar experiment, activity, class view
   if (interactiveSlides.includes(currentSlide)) return; // Don't swipe on interactive slides
   const diffX = touchStartX - e.changedTouches[0].clientX;
   const diffY = touchStartY - e.changedTouches[0].clientY;
@@ -1748,6 +1787,91 @@ document.addEventListener('touchend', (e) => {
     diffX > 0 ? nextSlide() : prevSlide();
   }
 });
+
+// ==================== BUSY DAY (persisted) ====================
+const BUSY_EMOJIS = ['📝','🧹','📺','🎮','😩','🗣️','⏰','😴','🎒','🏃','📱','😤','🛋️','🧩','🤯','😶'];
+const FALLBACK_BUSY = [
+  '📝 Homework','🧹 Chores','📺 Watching TV','🎮 Video games',
+  '😩 Worrying','🗣️ Arguing','⏰ Waiting around','😴 Being bored'
+];
+let busyItems = []; // { id, text }
+
+function randomBusyEmoji() {
+  return BUSY_EMOJIS[Math.floor(Math.random() * BUSY_EMOJIS.length)];
+}
+
+function renderBusyItems() {
+  const cloud = document.getElementById('busy-items-cloud');
+  cloud.innerHTML = '';
+  busyItems.forEach((item, i) => {
+    const span = document.createElement('span');
+    span.className = 'busy-item';
+    span.textContent = item.text;
+    span.style.animationDelay = Math.min(i * 0.08, 0.8) + 's';
+    cloud.appendChild(span);
+  });
+}
+
+async function loadBusyItems() {
+  try {
+    const res = await fetch('/_db/busy-items?limit=100&sort=created_at');
+    if (!res.ok) throw new Error('DB unavailable');
+    const data = await res.json();
+    if (data.items && data.items.length > 0) {
+      busyItems = data.items.map(it => ({ id: it.id, text: it.text }));
+    } else {
+      // DB empty — use fallbacks (they were seeded, but just in case)
+      busyItems = FALLBACK_BUSY.map((t, i) => ({ id: 'fallback-' + i, text: t }));
+    }
+  } catch (e) {
+    // Offline / not on itsalive — use fallbacks
+    busyItems = FALLBACK_BUSY.map((t, i) => ({ id: 'fallback-' + i, text: t }));
+  }
+  renderBusyItems();
+}
+
+async function addBusyItem() {
+  const input = document.getElementById('busy-add-input');
+  const btn = document.getElementById('busy-add-btn');
+  let text = input.value.trim();
+  if (!text) return;
+
+  // Auto-add emoji if the text doesn't start with one
+  const emojiRegex = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u;
+  if (!emojiRegex.test(text)) {
+    text = randomBusyEmoji() + ' ' + text;
+  }
+
+  const id = 'item-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+
+  // Optimistic UI: add immediately
+  busyItems.push({ id, text });
+  renderBusyItems();
+  input.value = '';
+
+  // Persist
+  btn.disabled = true;
+  try {
+    await fetch('/_db/busy-items/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+  } catch (e) {
+    // Silently keep the local item even if persist fails
+    console.warn('Could not persist busy item:', e);
+  }
+  btn.disabled = false;
+}
+
+// Enter key support for busy input
+document.getElementById('busy-add-input').addEventListener('keydown', (e) => {
+  e.stopPropagation(); // Prevent slide navigation while typing
+  if (e.key === 'Enter') addBusyItem();
+});
+
+// Load items on page load
+loadBusyItems();
 
 // ==================== JAR EXPERIMENT ====================
 let jarState = 'empty';
@@ -2191,7 +2315,7 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.nav-arrow') ||
       e.target.closest('#nav-dots') || e.target.closest('#music-toggle')) return;
 
-  const interactiveSlides = [2, 8, 9]; // jar experiment, activity, and class view
+  const interactiveSlides = [1, 2, 8, 9]; // busy day, jar experiment, activity, and class view
   if (interactiveSlides.includes(currentSlide)) return;
 
   nextSlide();
