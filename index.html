@@ -801,8 +801,9 @@ p, li {
 }
 
 @keyframes confetti-fall {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  25% { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
 }
 
 /* ========== CHALLENGE SLIDE ========== */
@@ -1072,6 +1073,35 @@ p, li {
   z-index: 299;
 }
 
+/* ========== ALL-DONE CELEBRATION ========== */
+.class-jars-grid.all-done .class-jar-card .cj-jar {
+  animation: jar-pulse 1.5s ease-in-out infinite alternate;
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 20px rgba(249,202,36,0.4), 0 0 40px rgba(249,202,36,0.2) !important;
+}
+
+.class-jars-grid.all-done .class-jar-card:nth-child(odd) .cj-jar { animation-delay: 0s; }
+.class-jars-grid.all-done .class-jar-card:nth-child(even) .cj-jar { animation-delay: 0.75s; }
+
+@keyframes jar-pulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); box-shadow: 0 0 30px rgba(249,202,36,0.6), 0 0 60px rgba(249,202,36,0.3) !important; }
+}
+
+.class-celebration {
+  animation: pop-in 0.6s ease;
+}
+
+.class-celebration h2 {
+  text-shadow: 0 0 30px rgba(249,202,36,0.5), 0 0 60px rgba(249,202,36,0.2);
+  animation: celebration-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes celebration-glow {
+  0% { text-shadow: 0 0 20px rgba(249,202,36,0.4); transform: scale(1); }
+  100% { text-shadow: 0 0 40px rgba(249,202,36,0.7), 0 0 80px rgba(249,202,36,0.3); transform: scale(1.03); }
+}
+
 /* Responsive */
 @media (max-width: 700px) {
   .slide { padding: 25px 20px; }
@@ -1270,8 +1300,8 @@ p, li {
     <p style="margin-bottom: 20px;">Tap any jar to see their stones</p>
     <div class="class-jars-grid" id="class-jars-grid"></div>
     <div class="class-celebration" id="class-celebration" style="display: none;">
-      <h2 style="color: var(--gold); margin-top: 15px;">🎉 Everyone picked their stones! 🎉</h2>
-      <p style="font-size: clamp(1rem, 2vw, 1.3rem);">Look at all those full jars!</p>
+      <h2 style="color: var(--gold); margin-top: 20px; font-size: clamp(1.8rem, 4vw, 3rem);">🎉 We ALL have our stones! 🎉</h2>
+      <p style="font-size: clamp(1.1rem, 2.2vw, 1.5rem); margin-top: 8px; font-weight: 700;">Every single jar is full. That's our class! 🪨✨</p>
     </div>
   </div>
 
@@ -1693,11 +1723,12 @@ function showKidResult(name) {
 }
 
 // ==================== CONFETTI ====================
-function launchConfetti() {
+function launchConfetti(count) {
+  count = count || 80;
   const container = document.getElementById('confetti-container');
   const colors = ['#FF6B35', '#F9CA24', '#E74C3C', '#3498DB', '#2ECC71', '#9B59B6', '#E84393', '#FF8C6B'];
 
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < count; i++) {
     const piece = document.createElement('div');
     piece.className = 'confetti-piece';
     piece.style.left = Math.random() * 100 + '%';
@@ -1712,7 +1743,16 @@ function launchConfetti() {
 
   setTimeout(() => {
     container.innerHTML = '';
-  }, 4000);
+  }, 4500);
+}
+
+function launchMegaConfetti() {
+  // Wave 1: immediate big burst
+  launchConfetti(200);
+  // Wave 2: second burst after a beat
+  setTimeout(() => launchConfetti(150), 1200);
+  // Wave 3: final shower
+  setTimeout(() => launchConfetti(100), 2800);
 }
 
 // ==================== AMBIENT MUSIC (Web Audio API) ====================
@@ -1875,8 +1915,12 @@ function buildClassView() {
   // Check if all done
   const allDone = kids.every(k => kidData[k].submitted);
   if (allDone) {
+    grid.classList.add('all-done');
     document.getElementById('class-celebration').style.display = 'block';
-    launchConfetti();
+    launchMegaConfetti();
+  } else {
+    grid.classList.remove('all-done');
+    document.getElementById('class-celebration').style.display = 'none';
   }
 }
 
