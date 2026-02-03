@@ -51,8 +51,9 @@ html, body {
   padding: 40px 60px;
   opacity: 0;
   pointer-events: none;
-  transform: translateX(60px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateX(80px) scale(0.98);
+  transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
   overflow-y: auto;
 }
@@ -60,12 +61,12 @@ html, body {
 .slide.active {
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(0);
+  transform: translateX(0) scale(1);
 }
 
 .slide.exit-left {
   opacity: 0;
-  transform: translateX(-60px);
+  transform: translateX(-80px) scale(0.98);
 }
 
 /* ========== TYPOGRAPHY ========== */
@@ -238,22 +239,26 @@ p, li {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  gap: 12px;
   z-index: 100;
+  padding: 10px 16px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
 }
 
 .nav-dot {
   width: 12px; height: 12px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.35);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   border: none;
 }
 
 .nav-dot:hover {
-  background: rgba(255,255,255,0.5);
-  transform: scale(1.15);
+  background: rgba(255,255,255,0.6);
+  transform: scale(1.25);
 }
 
 .nav-dot:focus-visible {
@@ -263,8 +268,8 @@ p, li {
 
 .nav-dot.active {
   background: var(--gold);
-  transform: scale(1.3);
-  box-shadow: 0 0 10px rgba(249,202,36,0.5);
+  transform: scale(1.4);
+  box-shadow: 0 0 14px rgba(249,202,36,0.6), 0 0 4px rgba(249,202,36,0.8);
 }
 
 /* ========== ARROWS ========== */
@@ -273,32 +278,35 @@ p, li {
   top: 50%;
   transform: translateY(-50%);
   z-index: 100;
-  background: rgba(255,255,255,0.15);
-  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.25);
   color: white;
-  width: 50px; height: 50px;
+  width: 52px; height: 52px;
   border-radius: 50%;
   font-size: 1.4rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(8px);
 }
 
 .nav-arrow:hover { 
-  background: rgba(255,255,255,0.3); 
-  transform: translateY(-50%) scale(1.1);
+  background: rgba(255,255,255,0.25); 
+  border-color: rgba(255,255,255,0.4);
+  transform: translateY(-50%) scale(1.12);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 .nav-arrow:active { 
-  transform: translateY(-50%) scale(0.95);
+  transform: translateY(-50%) scale(0.94);
 }
 .nav-arrow:focus-visible {
   outline: 3px solid var(--gold);
   outline-offset: 3px;
 }
-#prev-arrow { left: 15px; }
-#next-arrow { right: 15px; }
+#prev-arrow { left: 18px; }
+#next-arrow { right: 18px; }
 
 /* ========== MUSIC TOGGLE ========== */
 #music-toggle {
@@ -340,6 +348,12 @@ p, li {
   position: absolute;
   animation: float-rock 3s ease-in-out infinite;
   z-index: 2;
+  filter: url(#rockEffect);
+  transition: filter 0.3s ease;
+}
+
+.title-rock:hover {
+  filter: url(#rockEffect) brightness(1.1);
 }
 
 .title-rock:nth-child(2) {
@@ -360,11 +374,15 @@ p, li {
   animation-delay: 1s;
 }
 
-.title-rock svg { width: 100%; height: 100%; display: block; }
+.title-rock svg { 
+  width: 100%; 
+  height: 100%; 
+  display: block;
+}
 
 @keyframes float-rock {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(3deg); }
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  50% { transform: translateY(-10px) rotate(4deg) scale(1.02); }
 }
 
 .title-glow {
@@ -453,8 +471,10 @@ p, li {
 .busy-add-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 @keyframes pop-in {
-  from { opacity: 0; transform: scale(0.7); }
-  to { opacity: 1; transform: scale(1); }
+  0% { opacity: 0; transform: scale(0.6) translateY(10px); }
+  60% { opacity: 1; transform: scale(1.05) translateY(-3px); }
+  80% { transform: scale(0.98) translateY(1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 /* ========== JAR EXPERIMENT SLIDE ========== */
@@ -555,13 +575,18 @@ p, li {
 .jar-rock {
   position: absolute;
   opacity: 0;
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 2;
+  filter: url(#rockEffect);
+  transform: translateY(-80px) rotate(-5deg);
 }
 
 .jar-rock svg { width: 100%; height: 100%; display: block; }
 
-.jar-rock.visible { opacity: 1; }
+.jar-rock.visible { 
+  opacity: 1;
+  transform: translateY(0) rotate(0deg);
+}
 
 .jar-rock-1 {
   width: 88px; height: 68px;
@@ -579,7 +604,14 @@ p, li {
 }
 
 .jar-rock.visible.placed {
-  transform: translateY(0);
+  transform: translateY(0) rotate(0deg);
+  animation: rock-settle 0.4s ease-out;
+}
+
+@keyframes rock-settle {
+  0% { transform: translateY(-20px) rotate(-3deg); }
+  60% { transform: translateY(3px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
 }
 
 /* Overflow rocks — stacked on top of jar when sand-first fails */
@@ -587,9 +619,28 @@ p, li {
   z-index: 15;
 }
 
-.jar-rock-1.overflow { bottom: auto; top: -20px; left: 20px; transform: rotate(-12deg); }
-.jar-rock-2.overflow { bottom: auto; top: -45px; right: 15px; transform: rotate(10deg); }
-.jar-rock-3.overflow { bottom: auto; top: -65px; left: calc(50% - 35px); transform: rotate(-5deg); }
+.jar-rock-1.overflow { 
+  bottom: auto; top: -20px; left: 20px; 
+  transform: rotate(-12deg) !important;
+  animation: overflow-wobble 0.6s ease-out;
+}
+.jar-rock-2.overflow { 
+  bottom: auto; top: -45px; right: 15px; 
+  transform: rotate(10deg) !important;
+  animation: overflow-wobble 0.6s ease-out 0.1s;
+}
+.jar-rock-3.overflow { 
+  bottom: auto; top: -65px; left: calc(50% - 35px); 
+  transform: rotate(-5deg) !important;
+  animation: overflow-wobble 0.6s ease-out 0.2s;
+}
+
+@keyframes overflow-wobble {
+  0% { transform: translateY(-30px) rotate(0deg); opacity: 0; }
+  50% { transform: translateY(5px) rotate(var(--wobble-angle, 8deg)); }
+  70% { transform: translateY(-3px) rotate(calc(var(--wobble-angle, 8deg) * -0.5)); }
+  100% { opacity: 1; }
+}
 
 /* Experiment buttons */
 .experiment-controls {
@@ -606,17 +657,34 @@ p, li {
   font-family: 'Fredoka One', cursive;
   font-size: clamp(1rem, 2vw, 1.4rem);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   min-width: 250px;
+  position: relative;
+  overflow: hidden;
+}
+
+.exp-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.exp-btn:hover::before {
+  left: 100%;
 }
 
 .exp-btn:hover { 
-  transform: scale(1.05); 
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  transform: scale(1.06) translateY(-2px); 
+  box-shadow: 0 12px 35px rgba(0,0,0,0.25);
 }
 .exp-btn:active { 
-  transform: scale(0.98);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  transform: scale(0.97) translateY(0);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 .exp-btn:focus-visible {
   outline: 3px solid var(--gold);
@@ -665,22 +733,27 @@ p, li {
 }
 
 .rule-card {
-  background: rgba(255,255,255,0.1);
-  border: 2px solid rgba(255,255,255,0.15);
-  border-radius: 20px;
-  padding: 25px 35px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
+  border: 2px solid rgba(255,255,255,0.18);
+  border-radius: 22px;
+  padding: 28px 38px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 22px;
   animation: slide-up 0.5s ease backwards;
   max-width: 650px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.35s ease, 
+              border-color 0.35s ease,
+              background 0.35s ease;
+  backdrop-filter: blur(4px);
 }
 
 .rule-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  border-color: rgba(255,255,255,0.3);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.15);
+  border-color: rgba(255,255,255,0.35);
+  background: linear-gradient(135deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.08) 100%);
 }
 
 .rule-card:nth-child(1) { animation-delay: 0.2s; }
@@ -709,8 +782,10 @@ p, li {
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  0% { opacity: 0; transform: translateY(35px) scale(0.97); }
+  70% { opacity: 1; transform: translateY(-4px) scale(1.01); }
+  85% { transform: translateY(2px) scale(0.995); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ========== FOR YOU / FOR OTHERS ========== */
@@ -723,19 +798,22 @@ p, li {
 }
 
 .column-card {
-  background: rgba(255,255,255,0.08);
-  border: 2px solid rgba(255,255,255,0.15);
-  border-radius: 25px;
-  padding: 30px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.04) 100%);
+  border: 2px solid rgba(255,255,255,0.18);
+  border-radius: 28px;
+  padding: 32px;
   width: 320px;
   animation: slide-up 0.6s ease backwards;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.35s ease, 
+              border-color 0.35s ease;
+  backdrop-filter: blur(4px);
 }
 
 .column-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 35px rgba(0,0,0,0.2);
-  border-color: rgba(255,255,255,0.3);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.25), 0 6px 15px rgba(0,0,0,0.15);
+  border-color: rgba(255,255,255,0.35);
 }
 
 .column-card:nth-child(2) { animation-delay: 0.3s; }
@@ -835,22 +913,24 @@ p, li {
 }
 
 .preset-stone {
-  padding: 8px 18px;
-  border-radius: 25px;
-  border: 2px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
+  padding: 10px 20px;
+  border-radius: 28px;
+  border: 2px solid rgba(255,255,255,0.22);
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
   color: white;
   font-size: clamp(0.85rem, 1.5vw, 1.05rem);
   cursor: pointer;
-  transition: all 0.25s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   font-family: 'Nunito', sans-serif;
   font-weight: 600;
+  backdrop-filter: blur(2px);
 }
 
 .preset-stone:hover { 
-  background: rgba(255,255,255,0.2); 
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.12) 100%);
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  border-color: rgba(255,255,255,0.35);
 }
 
 .preset-stone:focus-visible {
@@ -859,10 +939,10 @@ p, li {
 }
 
 .preset-stone.selected-stone {
-  background: var(--orange);
+  background: linear-gradient(135deg, var(--orange) 0%, #e85a28 100%);
   border-color: var(--orange);
-  box-shadow: 0 4px 15px rgba(255,107,53,0.35);
-  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(255,107,53,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+  transform: scale(1.04);
 }
 
 .custom-input-row {
@@ -916,38 +996,64 @@ p, li {
 }
 
 .chosen-stone {
-  padding: 10px 20px;
-  border-radius: 40% 50% 45% 55%;
+  padding: 12px 22px;
+  border-radius: 42% 52% 48% 56% / 50% 48% 52% 50%;
   font-family: 'Fredoka One', cursive;
   font-size: clamp(0.85rem, 1.5vw, 1rem);
   color: white;
-  animation: pop-in 0.3s ease;
+  animation: chosen-stone-drop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   position: relative;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.chosen-stone:nth-child(1) { background: linear-gradient(135deg, var(--rock1), #c0392b); }
-.chosen-stone:nth-child(2) { background: linear-gradient(135deg, var(--rock2), #2980b9); }
-.chosen-stone:nth-child(3) { background: linear-gradient(135deg, var(--rock3), #27ae60); }
+.chosen-stone:hover {
+  transform: scale(1.06) rotate(2deg);
+}
+
+.chosen-stone:nth-child(1) { 
+  background: linear-gradient(145deg, #9A8B7D 0%, var(--rock1) 40%, #5E4D42 100%);
+  box-shadow: 0 4px 12px rgba(93,77,66,0.4), inset 0 2px 4px rgba(255,255,255,0.15);
+}
+.chosen-stone:nth-child(2) { 
+  background: linear-gradient(145deg, #B8C0C8 0%, var(--rock2) 40%, #5A6268 100%);
+  box-shadow: 0 4px 12px rgba(90,98,104,0.4), inset 0 2px 4px rgba(255,255,255,0.15);
+}
+.chosen-stone:nth-child(3) { 
+  background: linear-gradient(145deg, #D8C090 0%, var(--rock3) 40%, #6B5030 100%);
+  box-shadow: 0 4px 12px rgba(107,80,48,0.4), inset 0 2px 4px rgba(255,255,255,0.15);
+}
+
+@keyframes chosen-stone-drop {
+  0% { opacity: 0; transform: translateY(-25px) rotate(-8deg) scale(0.8); }
+  60% { transform: translateY(4px) rotate(2deg) scale(1.05); }
+  80% { transform: translateY(-2px) rotate(-1deg) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+}
 
 .chosen-stone::after {
   content: '✕';
   position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 20px;
-  height: 20px;
-  background: rgba(0,0,0,0.5);
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  background: rgba(231,76,60,0.85);
   border-radius: 50%;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
-.chosen-stone:hover::after { opacity: 1; }
+.chosen-stone:hover::after { 
+  opacity: 1; 
+  transform: scale(1.1);
+}
 
 .submit-stones-btn {
   padding: 16px 40px;
@@ -1193,7 +1299,13 @@ p, li {
 .closing-jar .glow-rock {
   position: absolute;
   z-index: 2;
-  animation: gentle-glow 2s ease-in-out infinite alternate;
+  animation: gentle-glow 2.5s ease-in-out infinite alternate;
+  filter: url(#rockEffect);
+  transition: transform 0.4s ease;
+}
+
+.closing-jar .glow-rock:hover {
+  transform: scale(1.08) rotate(3deg);
 }
 
 .closing-jar .glow-rock svg { width: 100%; height: 100%; display: block; }
@@ -1253,8 +1365,18 @@ p, li {
 .closing-jar-outline { display: none; }
 
 @keyframes gentle-glow {
-  from { filter: brightness(1) drop-shadow(0 0 4px rgba(255,255,255,0.15)); }
-  to { filter: brightness(1.15) drop-shadow(0 0 12px rgba(255,255,255,0.35)); }
+  0% { 
+    filter: url(#rockEffect) brightness(1) drop-shadow(0 0 6px rgba(255,255,255,0.15)); 
+    transform: translateY(0);
+  }
+  50% { 
+    filter: url(#rockEffect) brightness(1.12) drop-shadow(0 0 18px rgba(249,202,36,0.35)); 
+    transform: translateY(-3px);
+  }
+  100% { 
+    filter: url(#rockEffect) brightness(1.08) drop-shadow(0 0 12px rgba(255,255,255,0.25)); 
+    transform: translateY(0);
+  }
 }
 
 /* ========== WHAT ARE YOUR ROCKS ========== */
@@ -1491,38 +1613,99 @@ p, li {
 <!-- Hidden SVG definitions for shared gradients and filters -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden;">
   <defs>
-    <!-- Rock 1 gradient (brown river stone) -->
-    <radialGradient id="r1grad" cx="35%" cy="30%" r="65%">
-      <stop offset="0%" stop-color="#B8A090"/>
-      <stop offset="18%" stop-color="#7D6B5D"/>
-      <stop offset="45%" stop-color="#5E4D42"/>
-      <stop offset="70%" stop-color="#4A3D35"/>
-      <stop offset="100%" stop-color="#352A24"/>
+    <!-- ========== ROCK GRADIENTS (Enhanced with more depth) ========== -->
+    
+    <!-- Rock 1 gradient (warm brown river stone) -->
+    <radialGradient id="r1grad" cx="32%" cy="28%" r="70%">
+      <stop offset="0%" stop-color="#D4C4B0"/>
+      <stop offset="12%" stop-color="#B8A090"/>
+      <stop offset="28%" stop-color="#8B7565"/>
+      <stop offset="48%" stop-color="#6B5545"/>
+      <stop offset="68%" stop-color="#4A3D35"/>
+      <stop offset="88%" stop-color="#3A2D25"/>
+      <stop offset="100%" stop-color="#2A1D15"/>
     </radialGradient>
-    <!-- Rock 2 gradient (grey granite) -->
-    <radialGradient id="r2grad" cx="35%" cy="30%" r="65%">
-      <stop offset="0%" stop-color="#C0C0C0"/>
-      <stop offset="18%" stop-color="#8B8B8B"/>
-      <stop offset="45%" stop-color="#6E6E6E"/>
-      <stop offset="70%" stop-color="#525252"/>
-      <stop offset="100%" stop-color="#3A3A3A"/>
+    
+    <!-- Rock 2 gradient (cool grey granite with blue undertone) -->
+    <radialGradient id="r2grad" cx="32%" cy="28%" r="70%">
+      <stop offset="0%" stop-color="#D8DDE5"/>
+      <stop offset="12%" stop-color="#B8C0C8"/>
+      <stop offset="28%" stop-color="#8B9298"/>
+      <stop offset="48%" stop-color="#6B7278"/>
+      <stop offset="68%" stop-color="#4A5258"/>
+      <stop offset="88%" stop-color="#3A4248"/>
+      <stop offset="100%" stop-color="#2A3238"/>
     </radialGradient>
-    <!-- Rock 3 gradient (tan sandstone) -->
-    <radialGradient id="r3grad" cx="35%" cy="30%" r="65%">
-      <stop offset="0%" stop-color="#E0CBA0"/>
-      <stop offset="18%" stop-color="#A67C52"/>
-      <stop offset="45%" stop-color="#8B6441"/>
-      <stop offset="70%" stop-color="#6B4830"/>
-      <stop offset="100%" stop-color="#4D3422"/>
+    
+    <!-- Rock 3 gradient (warm tan/amber sandstone) -->
+    <radialGradient id="r3grad" cx="32%" cy="28%" r="70%">
+      <stop offset="0%" stop-color="#F0E0C0"/>
+      <stop offset="12%" stop-color="#D8C090"/>
+      <stop offset="28%" stop-color="#B89860"/>
+      <stop offset="48%" stop-color="#987040"/>
+      <stop offset="68%" stop-color="#785830"/>
+      <stop offset="88%" stop-color="#584020"/>
+      <stop offset="100%" stop-color="#382810"/>
     </radialGradient>
+    
+    <!-- ========== ROCK TEXTURE FILTERS ========== -->
+    
+    <!-- Subtle grain texture for rocks -->
+    <filter id="rockGrain" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise"/>
+      <feColorMatrix type="saturate" values="0" result="greyNoise"/>
+      <feBlend in="SourceGraphic" in2="greyNoise" mode="soft-light" result="textured"/>
+      <feComposite in="textured" in2="SourceGraphic" operator="in"/>
+    </filter>
+    
+    <!-- Drop shadow for rocks -->
+    <filter id="rockShadow" x="-20%" y="-10%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#1a1a2e" flood-opacity="0.35"/>
+    </filter>
+    
+    <!-- Combined rock effect (grain + shadow) -->
+    <filter id="rockEffect" x="-25%" y="-15%" width="150%" height="150%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" result="noise"/>
+      <feColorMatrix type="saturate" values="0" result="greyNoise"/>
+      <feBlend in="SourceGraphic" in2="greyNoise" mode="soft-light" result="textured"/>
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#0a0a1a" flood-opacity="0.4"/>
+    </filter>
+    
+    <!-- ========== GLASS JAR GRADIENTS ========== -->
+    
     <!-- Glass fill gradient (horizontal, edge-bright) -->
     <linearGradient id="jarGlassH" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#C8E6FF" stop-opacity="0.14"/>
-      <stop offset="12%" stop-color="#C8E6FF" stop-opacity="0.04"/>
-      <stop offset="50%" stop-color="#C8E6FF" stop-opacity="0.02"/>
-      <stop offset="88%" stop-color="#C8E6FF" stop-opacity="0.04"/>
-      <stop offset="100%" stop-color="#C8E6FF" stop-opacity="0.12"/>
+      <stop offset="0%" stop-color="#E0F4FF" stop-opacity="0.18"/>
+      <stop offset="8%" stop-color="#C8E6FF" stop-opacity="0.06"/>
+      <stop offset="50%" stop-color="#B8DCFF" stop-opacity="0.03"/>
+      <stop offset="92%" stop-color="#C8E6FF" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#E0F4FF" stop-opacity="0.16"/>
     </linearGradient>
+    
+    <!-- Glass rim highlight -->
+    <linearGradient id="jarRimGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#E0F4FF" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#C8E6FF" stop-opacity="0.05"/>
+    </linearGradient>
+    
+    <!-- Glass inner glow filter -->
+    <filter id="glassGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- ========== SPECULAR HIGHLIGHTS ========== -->
+    
+    <!-- Bright specular for rocks -->
+    <radialGradient id="rockSpecular" cx="30%" cy="25%" r="40%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.25"/>
+      <stop offset="40%" stop-color="#FFFFFF" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 </svg>
 
