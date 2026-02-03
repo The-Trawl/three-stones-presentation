@@ -139,7 +139,13 @@ p, li {
 .compass-svg {
   width: clamp(140px, 25vw, 200px);
   height: clamp(140px, 25vw, 200px);
-  filter: drop-shadow(0 0 20px rgba(249,202,36,0.3));
+  filter: drop-shadow(0 0 25px rgba(249,202,36,0.35)) drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.compass-svg:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 35px rgba(249,202,36,0.5)) drop-shadow(0 6px 18px rgba(0,0,0,0.25));
 }
 
 .compass-ring {
@@ -147,8 +153,8 @@ p, li {
 }
 
 @keyframes compass-pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
+  0%, 100% { opacity: 0.25; stroke-width: 1; }
+  50% { opacity: 0.7; stroke-width: 1.5; }
 }
 
 .compass-needle-group {
@@ -158,52 +164,82 @@ p, li {
 
 @keyframes compass-wobble {
   0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(8deg); }
-  50% { transform: rotate(-5deg); }
-  75% { transform: rotate(3deg); }
+  20% { transform: rotate(10deg); }
+  40% { transform: rotate(-6deg); }
+  60% { transform: rotate(4deg); }
+  80% { transform: rotate(-2deg); }
 }
 
 .compass-directions {
   display: flex;
-  gap: 30px;
+  gap: 35px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 25px;
   align-items: stretch;
 }
 
 .compass-pole {
-  background: rgba(255,255,255,0.08);
-  border: 2px solid rgba(255,255,255,0.15);
-  border-radius: 25px;
-  padding: 25px 30px;
-  width: 300px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.04) 100%);
+  border: 2px solid rgba(255,255,255,0.18);
+  border-radius: 28px;
+  padding: 28px 32px;
+  width: 310px;
   animation: slide-up 0.6s ease backwards;
   text-align: center;
+  backdrop-filter: blur(4px);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.35s ease, 
+              border-color 0.35s ease;
+}
+
+.compass-pole:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.2);
 }
 
 .compass-pole:nth-child(1) { animation-delay: 0.2s; }
 .compass-pole:nth-child(3) { animation-delay: 0.5s; }
 
-.pole-me { border-color: rgba(249,202,36,0.4); }
-.pole-others { border-color: rgba(107,203,119,0.4); }
+.pole-me { 
+  border-color: rgba(249,202,36,0.45); 
+  box-shadow: 0 4px 20px rgba(249,202,36,0.15);
+}
+.pole-me:hover { 
+  border-color: rgba(249,202,36,0.7);
+  box-shadow: 0 8px 30px rgba(249,202,36,0.25);
+}
+.pole-others { 
+  border-color: rgba(107,203,119,0.45); 
+  box-shadow: 0 4px 20px rgba(107,203,119,0.15);
+}
+.pole-others:hover { 
+  border-color: rgba(107,203,119,0.7);
+  box-shadow: 0 8px 30px rgba(107,203,119,0.25);
+}
 
 .compass-traits {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   justify-content: center;
-  margin: 15px 0;
+  margin: 18px 0;
 }
 
 .compass-trait {
-  padding: 10px 18px;
-  border-radius: 30px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  padding: 12px 20px;
+  border-radius: 32px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
+  border: 1px solid rgba(255,255,255,0.22);
   font-size: clamp(0.95rem, 1.8vw, 1.15rem);
   font-weight: 700;
   animation: pop-in 0.4s ease backwards;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.compass-trait:hover {
+  transform: scale(1.06);
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
 }
 
 .compass-trait:nth-child(1) { animation-delay: 0.3s; }
@@ -215,14 +251,15 @@ p, li {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  font-size: 3.2rem;
   animation: compass-wobble 4s ease-in-out infinite;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
 }
 
 .pole-desc {
   font-size: clamp(0.85rem, 1.5vw, 1rem);
-  opacity: 0.7;
-  margin-top: 8px;
+  opacity: 0.75;
+  margin-top: 10px;
   font-style: italic;
 }
 
@@ -502,6 +539,18 @@ p, li {
   height: 345px;
   pointer-events: none;
   z-index: 10;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+}
+
+/* Subtle glass shimmer animation */
+.jar-glass-svg path[stroke="rgba(255,255,255,0.2)"],
+.jar-glass-svg path[stroke="rgba(255,255,255,0.18)"] {
+  animation: glass-shimmer 4s ease-in-out infinite;
+}
+
+@keyframes glass-shimmer {
+  0%, 100% { stroke-opacity: 0.8; }
+  50% { stroke-opacity: 1; }
 }
 
 /* Interior clipping container — aligned with SVG jar body */
@@ -530,17 +579,19 @@ p, li {
   height: 0%;
   background: linear-gradient(
     180deg,
-    #ECD9A6 0%,
-    #E2CC96 12%,
-    #D8C088 28%,
-    #CEB47C 48%,
-    #C4A96A 68%,
-    #BA9D5E 85%,
-    #B09452 100%
+    #F0DFB0 0%,
+    #E8D4A0 8%,
+    #E2CC96 16%,
+    #D8C088 32%,
+    #CEB47C 52%,
+    #C4A96A 72%,
+    #BA9D5E 88%,
+    #A89048 100%
   );
-  transition: height 1.5s ease-in-out;
+  transition: height 1.8s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 0 0 22px 22px;
   overflow: hidden;
+  box-shadow: inset 0 4px 12px rgba(160,140,90,0.25);
 }
 
 .jar-sand::before {
@@ -548,12 +599,13 @@ p, li {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle, rgba(139,119,75,0.5) 0.5px, transparent 0.5px),
-    radial-gradient(circle, rgba(180,160,110,0.4) 0.4px, transparent 0.4px),
-    radial-gradient(circle, rgba(160,140,90,0.45) 0.6px, transparent 0.6px),
-    radial-gradient(circle, rgba(200,180,130,0.3) 0.3px, transparent 0.3px);
-  background-size: 6px 5px, 4px 4px, 7px 6px, 3px 3px;
-  background-position: 0 0, 2px 2px, 4px 1px, 1px 3px;
+    radial-gradient(circle, rgba(139,119,75,0.55) 0.6px, transparent 0.6px),
+    radial-gradient(circle, rgba(180,160,110,0.45) 0.5px, transparent 0.5px),
+    radial-gradient(circle, rgba(160,140,90,0.5) 0.7px, transparent 0.7px),
+    radial-gradient(circle, rgba(200,180,130,0.35) 0.4px, transparent 0.4px),
+    radial-gradient(circle, rgba(120,100,60,0.3) 0.3px, transparent 0.3px);
+  background-size: 7px 6px, 5px 5px, 8px 7px, 4px 4px, 6px 5px;
+  background-position: 0 0, 3px 2px, 5px 1px, 1px 4px, 2px 3px;
   border-radius: inherit;
 }
 
@@ -1390,28 +1442,60 @@ p, li {
 }
 
 .example-rock {
-  padding: 14px 24px;
-  border-radius: 40% 50% 45% 55% / 50% 45% 55% 50%;
+  padding: 16px 26px;
+  border-radius: 42% 52% 48% 56% / 52% 48% 54% 50%;
   font-weight: 700;
   font-size: clamp(0.9rem, 1.8vw, 1.15rem);
   animation: pop-in 0.4s ease backwards;
-}
-
-.example-rock {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.35s ease,
+              filter 0.35s ease;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  backdrop-filter: blur(2px);
 }
 
 .example-rock:hover {
-  transform: translateY(-4px) rotate(2deg);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transform: translateY(-6px) rotate(3deg) scale(1.05);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+  filter: brightness(1.08);
 }
 
-.example-rock:nth-child(1) { background: rgba(231,76,60,0.3); border: 2px solid var(--rock1); animation-delay: 0.1s; }
-.example-rock:nth-child(2) { background: rgba(52,152,219,0.3); border: 2px solid var(--rock2); animation-delay: 0.2s; }
-.example-rock:nth-child(3) { background: rgba(46,204,113,0.3); border: 2px solid var(--rock3); animation-delay: 0.3s; }
-.example-rock:nth-child(4) { background: rgba(249,202,36,0.3); border: 2px solid var(--gold); animation-delay: 0.4s; }
-.example-rock:nth-child(5) { background: rgba(155,89,182,0.3); border: 2px solid var(--purple); animation-delay: 0.5s; }
-.example-rock:nth-child(6) { background: rgba(232,67,147,0.3); border: 2px solid var(--pink); animation-delay: 0.6s; }
+.example-rock:nth-child(1) { 
+  background: linear-gradient(135deg, rgba(180,120,100,0.4) 0%, rgba(231,76,60,0.35) 100%); 
+  border: 2px solid var(--rock1); 
+  animation-delay: 0.1s;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.15), 0 4px 12px rgba(125,107,93,0.25);
+}
+.example-rock:nth-child(2) { 
+  background: linear-gradient(135deg, rgba(120,160,200,0.4) 0%, rgba(52,152,219,0.35) 100%); 
+  border: 2px solid var(--rock2); 
+  animation-delay: 0.2s;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.15), 0 4px 12px rgba(139,139,139,0.25);
+}
+.example-rock:nth-child(3) { 
+  background: linear-gradient(135deg, rgba(140,200,160,0.4) 0%, rgba(46,204,113,0.35) 100%); 
+  border: 2px solid var(--rock3); 
+  animation-delay: 0.3s;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.15), 0 4px 12px rgba(166,124,82,0.25);
+}
+.example-rock:nth-child(4) { 
+  background: linear-gradient(135deg, rgba(250,220,120,0.4) 0%, rgba(249,202,36,0.35) 100%); 
+  border: 2px solid var(--gold); 
+  animation-delay: 0.4s;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), 0 4px 12px rgba(249,202,36,0.3);
+}
+.example-rock:nth-child(5) { 
+  background: linear-gradient(135deg, rgba(180,140,200,0.4) 0%, rgba(155,89,182,0.35) 100%); 
+  border: 2px solid var(--purple); 
+  animation-delay: 0.5s;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.15), 0 4px 12px rgba(155,89,182,0.25);
+}
+.example-rock:nth-child(6) { 
+  background: linear-gradient(135deg, rgba(240,140,180,0.4) 0%, rgba(232,67,147,0.35) 100%); 
+  border: 2px solid var(--pink); 
+  animation-delay: 0.6s;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.15), 0 4px 12px rgba(232,67,147,0.25);
+}
 
 /* ========== CLASS VIEW ========== */
 .class-jars-grid {
