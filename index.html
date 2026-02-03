@@ -454,15 +454,15 @@ p, li {
   z-index: 10;
 }
 
-/* Interior clipping container */
+/* Interior clipping container — aligned with SVG jar body */
 .jar-demo-outline {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  right: 3px;
-  bottom: 3px;
+  top: 8px;
+  left: 18px;
+  right: 18px;
+  bottom: 4px;
   border: none;
-  border-radius: 8px 8px 28px 28px;
+  border-radius: 6px 6px 25px 25px;
   background: transparent;
   overflow: hidden;
 }
@@ -489,7 +489,7 @@ p, li {
     #B09452 100%
   );
   transition: height 1.5s ease-in-out;
-  border-radius: 0 0 25px 25px;
+  border-radius: 0 0 22px 22px;
   overflow: hidden;
 }
 
@@ -534,32 +534,32 @@ p, li {
 .jar-rock.visible { opacity: 1; }
 
 .jar-rock-1 {
-  width: 108px; height: 84px;
-  bottom: 4px; left: 4px;
+  width: 88px; height: 68px;
+  bottom: 8px; left: 6px;
 }
 
 .jar-rock-2 {
-  width: 102px; height: 80px;
-  bottom: 4px; right: 4px;
+  width: 82px; height: 64px;
+  bottom: 8px; right: 6px;
 }
 
 .jar-rock-3 {
-  width: 96px; height: 76px;
-  bottom: 82px; left: calc(50% - 48px);
+  width: 78px; height: 60px;
+  bottom: 70px; left: calc(50% - 39px);
 }
 
 .jar-rock.visible.placed {
   transform: translateY(0);
 }
 
-/* Overflow rocks */
+/* Overflow rocks — stacked on top of jar when sand-first fails */
 .jar-rock.overflow {
-  z-index: 5;
+  z-index: 15;
 }
 
-.jar-rock-1.overflow { bottom: auto; top: -30px; left: 10px; transform: rotate(-15deg); }
-.jar-rock-2.overflow { bottom: auto; top: -50px; right: 5px; transform: rotate(10deg); }
-.jar-rock-3.overflow { bottom: auto; top: -70px; left: 40%; transform: rotate(-5deg); }
+.jar-rock-1.overflow { bottom: auto; top: -20px; left: 20px; transform: rotate(-12deg); }
+.jar-rock-2.overflow { bottom: auto; top: -45px; right: 15px; transform: rotate(10deg); }
+.jar-rock-3.overflow { bottom: auto; top: -65px; left: calc(50% - 35px); transform: rotate(-5deg); }
 
 /* Experiment buttons */
 .experiment-controls {
@@ -2515,6 +2515,9 @@ goToSlide = function(n) {
   origGoToSlide(n);
   if (n === 9) buildClassView(); // Class View slide
 };
+
+// Build class view on initial page load
+buildClassView();
 </script>
 </body>
 </html>
